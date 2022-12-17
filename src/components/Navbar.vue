@@ -53,7 +53,7 @@ export default {
     },
     methods: {
         redirect () {
-            this.$router.push({ name: 'Login' })
+            this.$router.push({ name: 'signin' })
         }
     }
 }

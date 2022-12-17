@@ -11,7 +11,7 @@
     <v-card class="pa-7" width="500" height="600">
 
       <p class="text-h4 
-      font-weight-bold 
+      font-weight-medium 
       text-center">
         Welcome
       </p>
@@ -20,7 +20,7 @@
       font-weight-medium 
       text-center
       ma-2">
-        Login to begin!
+        Sign in to begin!
       </p>
       
       <div class="mx-4 my-15">
@@ -49,10 +49,10 @@
         <v-btn color="white" size="large"
         v-bind:to="{ name: 'Decks' }">
           <v-icon icon="mdi-login" class="mr-2"></v-icon>
-          <span>Login</span>
+          <span>Sign in</span>
         </v-btn>
 
-        <v-btn flat class="my-4">Register</v-btn>
+        <v-btn variant="text" class="my-4">Sign up</v-btn>
       </div>
 
     </v-card>

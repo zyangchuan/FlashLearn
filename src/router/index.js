@@ -1,16 +1,16 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Login from '../views/Login.vue'
+import Signin from '../views/Signin.vue'
 import Decks from '../views/Decks.vue'
 
 const routes = [
   {
     path: '/',
-    redirect: '/login'
+    redirect: '/sign-in'
   },
   {
-    path: '/login',
-    name: 'Login',
-    component: Login
+    path: '/sign-in',
+    name: 'signin',
+    component: Signin
   },
   {
     path: '/decks',
