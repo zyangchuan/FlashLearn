@@ -28,7 +28,7 @@
         <p class="caption
         font-weight-light
         text-uppercase
-        ma-2">
+        ma-2 ml-0">
           Username or email
         </p>
 
@@ -37,7 +37,7 @@
         <p class="caption
         font-weight-light
         text-uppercase
-        ma-2">
+        ma-2 ml-0">
           Password
         </p>
 
