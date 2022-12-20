@@ -5,7 +5,7 @@
   fill-height">
     
     <div class="my-10 hidden-md-and-up">
-      <h1 class="text-h4 font-weight-light">The Revision App</h1>
+      <h1 class="text-h4 font-weight-light">FlashLearn</h1>
     </div>
 
     <v-card class="pa-7" width="500" height="600">
@@ -51,16 +51,19 @@
           <v-icon icon="mdi-login" class="mr-2"></v-icon>
           <span>Sign in</span>
         </v-btn>
-
-        <v-btn variant="text" class="my-4">Sign up</v-btn>
+        
+        <v-btn 
+            variant="text"
+            class="my-4"
+            v-bind:to="{ name: 'Signup' }">
+            Sign up
+        </v-btn>
       </div>
 
     </v-card>
     
     <div class="largetitle hidden-sm-and-down ml-16">
-      <h1 class="text-h1 font-weight-light">The</h1>
-      <h1 class="text-h1 font-weight-light">Revision</h1>
-      <h1 class="text-h1 font-weight-light">App</h1>
+      <h1 class="text-h1 font-weight-light">FlashLearn</h1>
     </div>   
 
   </div>
