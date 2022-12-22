@@ -2,7 +2,7 @@
   <v-app-bar app size="large">
     <v-app-bar-nav-icon color="white" v-on:click="drawer = !drawer"></v-app-bar-nav-icon>
     <v-app-bar-title>
-        <span class="font-weight-light">The Revision App</span>
+        <span class="font-weight-light">FlashLearn</span>
     </v-app-bar-title>
     <v-spacer></v-spacer>
     <v-btn 
