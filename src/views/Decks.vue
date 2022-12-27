@@ -1,5 +1,5 @@
 <template>
-  <Navbar />
+  <Navbar v-bind:username="username"/>
   <v-container>
     <h1 class="text-h4 font-weight-bold my-10">Card Decks</h1>
     <v-row wrap>
@@ -68,16 +68,20 @@ export default {
   components: { Navbar, AddNewDeck },
   data() {
     return {
+      username: "",
       decks: [],
       addcardcolor: "#00ffff",
       addoverlay: false,
     }
   },
-  created() {
-    this.initialize()
-
+  mounted() {
+    if (!this.$store.state.isAuthenticated) {
+      this.$router.push({ name: "Signin" })
+    } else {
+      console.log(this.$store.state.currentUser)
+      this.username = this.$store.state.currentUser.attributes.nickname
+    }
   },
-
   methods: {
     addDeck(deckInfo) {
       axios.post('http://127.0.0.1:5000/anki/decks/edit', {
@@ -88,7 +92,6 @@ export default {
         .then(() => {
           this.initialize()
         })
-     
     },
     initialize() {
       axios.get('http://127.0.0.1:5000/anki/decks', {
@@ -102,10 +105,7 @@ export default {
         .catch(function (error) {
           console.log(error);
         })
-
     }
-
-
   }
 }
 

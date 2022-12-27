@@ -1,0 +1,20 @@
+{
+  "staging": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-flashlearn-staging-70138-authRole",
+      "UnauthRoleArn": "arn:aws:iam::941875519416:role/amplify-flashlearn-staging-70138-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::941875519416:role/amplify-flashlearn-staging-70138-authRole",
+      "Region": "ap-northeast-1",
+      "DeploymentBucketName": "amplify-flashlearn-staging-70138-deployment",
+      "UnauthRoleName": "amplify-flashlearn-staging-70138-unauthRole",
+      "StackName": "amplify-flashlearn-staging-70138",
+      "StackId": "arn:aws:cloudformation:ap-northeast-1:941875519416:stack/amplify-flashlearn-staging-70138/24cc8e80-84eb-11ed-ba40-0624d1c13e77",
+      "AmplifyAppId": "d2q2t3w7y5y1yd"
+    },
+    "categories": {
+      "auth": {
+        "FlashLearn": {}
+      }
+    }
+  }
+}
