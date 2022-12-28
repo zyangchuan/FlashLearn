@@ -9,7 +9,7 @@
       <h1 class="text-h4 font-weight-light">FlashLearn</h1>
     </div>
 
-    <v-card class="pa-7" width="500" height="580" v-if="!unconfirmed">
+    <v-card class="pa-7" width="500" v-if="!unconfirmed">
 
       <p 
         class="text-h4 

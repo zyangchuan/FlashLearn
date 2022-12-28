@@ -9,7 +9,7 @@
 				<h1 class="text-h4 font-weight-light">FlashLearn</h1>
 		</div>
 
-		<v-card class="pa-7" width="500" height="680" v-if="!unconfirmed">
+		<v-card class="pa-7" width="500" v-if="!unconfirmed">
 			<p 
 				class="text-h4
 				mb-4 
@@ -19,20 +19,6 @@
 			</p>
 	
 			<div class="mx-4 mt-6 mb-2">
-
-				<p 
-					class="caption
-					font-weight-light
-					text-uppercase
-					ma-2 ml-0">
-					Username
-				</p>
-
-				<v-text-field
-          label="Username" 
-          v-model="nickname"
-          v-bind:rules="[required]">
-        </v-text-field>
 
 				<p 
 					class="caption
@@ -83,9 +69,9 @@
 
 			<p class="text-center text-red">{{ errorMsg }}</p>
 
-			<div class="mx-4 my-5">
-					<v-btn flat v-on:click="register">Sign up</v-btn>
-					<v-btn flat v-bind:to="{ name: 'Signin' }">Sign in</v-btn>
+			<div class="ma-4">
+        <v-btn flat v-on:click="register">Sign up</v-btn>
+        <v-btn flat v-bind:to="{ name: 'Signin' }">Sign in</v-btn>
 			</div>
 
 		</v-card>
@@ -107,36 +93,34 @@ export default {
 	components: { ConfirmSignup },
 	data () {
 		return {
-			nickname: "",
 			email: "",
 			password: "",
-			cpassword: "",
-      validated: false,
-			unconfirmed: false,
-			code: "",
-			errorMsg: ""
+			cpassword: "", //confirm password field
+      validated: false, //check if passwords match
+			unconfirmed: false, //if unconfirmed, render confirmation page
+			errorMsg: "" //for alerting account already exisiting
 		}
 	},
 	methods: {
 		async register () {
-      if (this.validated) {
-        try {
-          const { user } = await Auth.signUp({
-            username: this.email,
-            password: this.password,
-            attributes: {
-              nickname: this.nickname
-            }
-          })
-          console.log(user)
-          this.unconfirmed = true
-        } catch (error) {
-          console.log("signup error: ", error)
-          if (error.name === "UsernameExistsException") {
-            this.errorMsg = "An account with the given email already exists."
-          }
-        }
-      }
+			if (this.validated) {
+				try {
+				const { user } = await Auth.signUp({
+					username: this.email,
+					password: this.password,
+					attributes: {
+						email: this.email
+					}
+				})
+				console.log(user)
+				this.unconfirmed = true
+				} catch (error) {
+				console.log("signup error: ", error)
+				if (error.name === "UsernameExistsException") {
+					this.errorMsg = "An account with the given email already exists."
+				}
+				}
+			}
 		},
     required(value) {
       if (value) {

@@ -79,7 +79,7 @@ export default {
       this.$router.push({ name: "Signin" })
     } else {
       console.log(this.$store.state.currentUser)
-      this.username = this.$store.state.currentUser.attributes.nickname
+      this.username = this.$store.state.currentUser.attributes.preferred_username
     }
   },
   methods: {

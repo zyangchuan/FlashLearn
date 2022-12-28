@@ -1,7 +1,6 @@
 <template>
         <v-card
             width="500" 
-            height="510"
             title="Add a new card deck"
             class="pa-5">
 

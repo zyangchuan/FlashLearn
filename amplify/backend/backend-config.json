@@ -1,34 +1,45 @@
 {
   "auth": {
-    "FlashLearn": {
-      "customAuth": false,
-      "dependsOn": [],
-      "frontendAuthConfig": {
-        "mfaConfiguration": "OFF",
-        "mfaTypes": [
-          "SMS"
-        ],
-        "passwordProtectionSettings": {
-          "passwordPolicyCharacters": [
-            "REQUIRES_LOWERCASE",
-            "REQUIRES_NUMBERS"
-          ],
-          "passwordPolicyMinLength": 8
-        },
-        "signupAttributes": [
-          "EMAIL",
-          "NICKNAME"
-        ],
-        "socialProviders": [],
-        "usernameAttributes": [
-          "EMAIL"
-        ],
-        "verificationMechanisms": [
-          "EMAIL"
-        ]
-      },
+    "flashlearn": {
+      "service": "Cognito",
+      "serviceType": "imported",
       "providerPlugin": "awscloudformation",
-      "service": "Cognito"
+      "dependsOn": [],
+      "customAuth": false
+    }
+  },
+  "parameters": {
+    "AMPLIFY_auth_flashlearn_nativeClientId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "flashlearn"
+        }
+      ]
+    },
+    "AMPLIFY_auth_flashlearn_userPoolId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "flashlearn"
+        }
+      ]
+    },
+    "AMPLIFY_auth_flashlearn_userPoolName": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "flashlearn"
+        }
+      ]
+    },
+    "AMPLIFY_auth_flashlearn_webClientId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "flashlearn"
+        }
+      ]
     }
   }
 }
