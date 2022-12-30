@@ -1,38 +1,20 @@
 <template>
   <v-app>
     <v-main>
+      <Navbar v-if="this.$store.state.isAuthenticated"/>
       <router-view/>
     </v-main>
   </v-app>
 </template>
 
 <script>
-import { Auth } from "aws-amplify"
+import Navbar from "./components/Navbar.vue"
 
 export default {
   name: 'App',
-  
-  data: () => ({
-    //
-  }),
-
-  methods: {
-    async retrieveSession () {
-      try {
-        const session = await Auth.currentSession()
-        this.$store.commit("setAuthenticationState", true)
-        console.log(session)
-        const user = await Auth.currentAuthenticatedUser()
-        console.log(user)
-        this.$store.commit("setCurrentUser", user)
-      } catch (error) {
-        console.log(error)
-      }
-    }
-  },
-
-  mounted() {
-    this.retrieveSession()
+  components: { Navbar },
+  created() {
+    this.$store.dispatch("getAuthentication")
   }
 }
 </script>

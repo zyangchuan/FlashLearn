@@ -19,60 +19,60 @@
 			</p>
 	
 			<div class="mx-4 mt-6 mb-2">
+        <v-form v-model="validated">
+          <p 
+            class="caption
+            font-weight-light
+            text-uppercase
+            ma-2 ml-0">
+            Email address
+          </p>
 
-				<p 
-					class="caption
-					font-weight-light
-					text-uppercase
-					ma-2 ml-0">
-					Email address
-				</p>
+          <v-text-field 
+            type="email" 
+            label="Email Address" 
+            v-model="email"
+            v-bind:rules="[required]">
+          </v-text-field>
 
-				<v-text-field 
-          type="email" 
-          label="Email Address" 
-          v-model="email"
-          v-bind:rules="[required]">
-        </v-text-field>
+          <p 
+            class="caption
+            font-weight-light
+            text-uppercase
+            ma-2 ml-0">
+            Password
+          </p>
 
-				<p 
-					class="caption
-					font-weight-light
-					text-uppercase
-					ma-2 ml-0">
-					Password
-				</p>
+          <v-text-field 
+            type="password" 
+            label="Password" 
+            v-model="password"
+            v-bind:rules="[required, lengthCheck, letterCheck, numberCheck]">
+          </v-text-field>
 
-				<v-text-field 
-          type="password" 
-          label="Password" 
-          v-model="password"
-          v-bind:rules="[required, lengthCheck, letterCheck, numberCheck]">
-        </v-text-field>
+          <p 
+            class="caption
+            font-weight-light
+            text-uppercase
+            ma-2 ml-0">
+            Confirm Password
+          </p>
 
-				<p 
-					class="caption
-					font-weight-light
-					text-uppercase
-					ma-2 ml-0">
-					Confirm Password
-				</p>
+          <v-text-field
+            type="password" 
+            label="Password" 
+            v-model="cpassword" 
+            v-bind:rules="[matchingPass]">
+          </v-text-field>
+        </v-form>
+      </div>
 
-				<v-text-field
-          type="password" 
-          label="Password" 
-          v-model="cpassword" 
-          v-bind:rules="[matchingPass]">
-        </v-text-field>
+      <p class="text-center text-red">{{ errorMsg }}</p>
 
-			</div>
-
-			<p class="text-center text-red">{{ errorMsg }}</p>
-
-			<div class="ma-4">
+      <div class="ma-4">
         <v-btn flat v-on:click="register">Sign up</v-btn>
         <v-btn flat v-bind:to="{ name: 'Signin' }">Sign in</v-btn>
-			</div>
+      </div>
 
 		</v-card>
 
@@ -96,7 +96,7 @@ export default {
 			email: "",
 			password: "",
 			cpassword: "", //confirm password field
-      validated: false, //check if passwords match
+      validated: false, //validation
 			unconfirmed: false, //if unconfirmed, render confirmation page
 			errorMsg: "" //for alerting account already exisiting
 		}
@@ -105,20 +105,26 @@ export default {
 		async register () {
 			if (this.validated) {
 				try {
-				const { user } = await Auth.signUp({
-					username: this.email,
-					password: this.password,
-					attributes: {
-						email: this.email
-					}
-				})
-				console.log(user)
-				this.unconfirmed = true
+          const { user } = await Auth.signUp({
+            username: this.email,
+            password: this.password,
+            attributes: {
+              email: this.email
+            }
+          })
+          console.log(user)
+          this.unconfirmed = true
 				} catch (error) {
-				console.log("signup error: ", error)
-				if (error.name === "UsernameExistsException") {
-					this.errorMsg = "An account with the given email already exists."
-				}
+          console.log("signup error: ", error)
+
+          switch (error.name) {
+            case "UsernameExistsException": 
+              this.errorMsg = "An account with the given email already exists."
+              break
+            case "InvalidParameterException":
+              this.errorMsg = "Invalid email address format."
+              break
+          }
 				}
 			}
 		},
@@ -131,10 +137,8 @@ export default {
     },
 		matchingPass () {
 			if (this.cpassword === this.password) {
-        this.validated = true
 				return true
 			} else {
-        this.validated = false
 				return "Passwords do not match."
 			}
 		},

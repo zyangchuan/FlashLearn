@@ -26,7 +26,7 @@
         Sign in to begin!
       </p>
       
-      <div class="mx-4 mt-15 mb-10">
+      <div class="mx-4 mt-15 mb-6">
 
         <p 
           class="caption
@@ -36,7 +36,12 @@
           Username or email
         </p>
 
-        <v-text-field label="Username/Email" prepend-inner-icon="mdi-account" v-model="email"></v-text-field>
+        <v-text-field 
+          label="Username/Email"
+          prepend-inner-icon="mdi-account" 
+          v-model="email"
+          v-bind:rules="[required]">
+        </v-text-field>
 
         <p 
           class="caption
@@ -46,11 +51,19 @@
           Password
         </p>
 
-        <v-text-field type="password" label="Password" prepend-inner-icon="mdi-key" v-model="password"></v-text-field>
+        <v-text-field
+          type="password" 
+          label="Password" 
+          prepend-inner-icon="mdi-key" 
+          v-model="password"
+          v-bind:rules="[required]">
+        </v-text-field>
 
       </div>
 
-      <div class="d-flex flex-column align-center">
+      <p class="text-subtitle-1 text-red text-center">{{ errorMsg }}</p>
+
+      <div class="d-flex flex-column align-center mt-10 mb-4">
         <v-btn 
           color="white"
           size="large"
@@ -62,7 +75,7 @@
         
         <v-btn 
           variant="text"
-          class="my-6"
+          class="mt-6"
           v-bind:to="{ name: 'Signup' }">
           Sign up
         </v-btn>
@@ -85,20 +98,24 @@
 
 <script>
 import ConfirmSignup from "../components/ConfirmSignup.vue"
-import { defineComponent } from 'vue'
 import { Auth } from "aws-amplify"
 
 // Components
 
-export default defineComponent({
-  name: 'Login',
+export default ({
   components: { ConfirmSignup },
   data () {
     return {
       email: "",
       password: "",
       unconfirmed: false,
-      loading: false
+      loading: false,
+      errorMsg: ""
+    }
+  },
+  mounted () {
+    if (this.$store.state.isAuthenticated) {
+      this.$router.push({ name: 'CardDecks' })
     }
   },
   methods: {
@@ -106,18 +123,28 @@ export default defineComponent({
       try {
         this.loading = true
         await Auth.signIn(this.email, this.password)
-        Auth.currentAuthenticatedUser()
-          .then (user => {
-            this.$store.commit("setCurrentUser", user)
-            this.$store.commit("setAuthenticationState", true)
-            this.$router.push({ name: "Decks" })
-          })
+        this.$store.dispatch("getAuthentication")
+        this.$router.push({ name: "CardDecks" })
       
       } catch (error) {
         console.log("signin error:", error)
-        if (error.name === 'UserNotConfirmedException') {
-          this.unconfirmed = true
+
+        switch (error.name) {
+          case "UserNotConfirmedException": 
+            this.unconfirmed = true
+            break
+          case "NotAuthorizedException":
+            this.loading = false
+            this.errorMsg = "Incorrect username or password."
+            break
         }
+      }
+    },
+    required(value) {
+      if (value) {
+        return true
+      } else {
+        return "This field is required."
       }
     }
   }
