@@ -1,88 +1,95 @@
 <template>
-	<div 
-		class="d-flex flex-column
-		justify-center
-		align-center
-		fill-height">
-	
-		<div class="my-10">
-				<h1 class="text-h4 font-weight-light">FlashLearn</h1>
-		</div>
+	<v-container class="d-flex justify-center align-center fill-height">
 
-		<v-card class="pa-7" width="500" v-if="!unconfirmed">
-			<p 
-				class="text-h4
-				mb-4 
-				font-weight-medium 
-				text-center">
-				Sign up
-			</p>
-	
-			<div class="mx-4 mt-6 mb-2">
-        <v-form v-model="validated">
+    <v-row class="align-center">
+      <v-col cols="12">
+        <div class="my-4">
+          <h1 class="text-h4 font-weight-light text-center">FlashLearn</h1>
+        </div>
+      </v-col>
+
+      <v-col cols="12">
+        <v-card class="py-7 px-md-7 px-lg-7 px-sm-7 px-3 mx-auto" max-width="500px" v-if="!unconfirmed">
           <p 
-            class="caption
-            font-weight-light
-            text-uppercase
-            ma-2 ml-0">
-            Email address
+            class="text-h5 text-sm-h4 text-md-h4 text-lg-h4
+            mb-4 
+            font-weight-medium 
+            text-center">
+            Sign up
           </p>
+      
+          <div class="mx-4 mt-6 mb-2">
+            <v-form v-model="validated">
+              <p 
+                class="caption
+                font-weight-light
+                text-uppercase
+                ma-2 ml-0">
+                Email address
+              </p>
 
-          <v-text-field 
-            type="email" 
-            label="Email Address" 
-            v-model="email"
-            v-bind:rules="[required]">
-          </v-text-field>
+              <v-text-field 
+                type="email" 
+                label="Email Address" 
+                v-model="email"
+                v-bind:rules="[required]">
+              </v-text-field>
 
-          <p 
-            class="caption
-            font-weight-light
-            text-uppercase
-            ma-2 ml-0">
-            Password
-          </p>
+              <p 
+                class="caption
+                font-weight-light
+                text-uppercase
+                ma-2 ml-0">
+                Password
+              </p>
 
-          <v-text-field 
-            type="password" 
-            label="Password" 
-            v-model="password"
-            v-bind:rules="[required, lengthCheck, letterCheck, numberCheck]">
-          </v-text-field>
+              <v-text-field 
+                type="password" 
+                label="Password" 
+                v-model="password"
+                v-bind:rules="[required, lengthCheck, letterCheck, numberCheck]">
+              </v-text-field>
 
-          <p 
-            class="caption
-            font-weight-light
-            text-uppercase
-            ma-2 ml-0">
-            Confirm Password
-          </p>
+              <p 
+                class="caption
+                font-weight-light
+                text-uppercase
+                ma-2 ml-0">
+                Confirm Password
+              </p>
 
-          <v-text-field
-            type="password" 
-            label="Password" 
-            v-model="cpassword" 
-            v-bind:rules="[matchingPass]">
-          </v-text-field>
-        </v-form>
-      </div>
+              <v-text-field
+                type="password" 
+                label="Password" 
+                v-model="cpassword" 
+                v-bind:rules="[matchingPass]">
+              </v-text-field>
+            </v-form>
+          </div>
 
-      <p class="text-center text-red">{{ errorMsg }}</p>
+          <p class="text-center text-red">{{ errorMsg }}</p>
 
-      <div class="ma-4">
-        <v-btn flat v-on:click="register">Sign up</v-btn>
-        <v-btn flat v-bind:to="{ name: 'Signin' }">Sign in</v-btn>
-      </div>
+          <div class="mt-4 mx-4">
+            <v-btn flat v-on:click="register">Sign up</v-btn>
+            <v-btn flat v-bind:to="{ name: 'Signin' }">Sign in</v-btn>
+          </div>
 
-		</v-card>
-
-		<ConfirmSignup
-      v-bind:email="this.email" 
-      v-bind:password="this.password" 
-      v-bind:resendCode="false"
-      v-if="unconfirmed" />
+        </v-card>
+      </v-col>
+      
+      <v-col cols="12">
+        <ConfirmSignup
+          v-bind:email="this.email" 
+          v-bind:password="this.password" 
+          v-bind:resendCode="false"
+          v-if="unconfirmed" />
+      </v-col>
+      
+    </v-row>
+		
 	
-	</div>
+	</v-container>
+
 </template>
 
 <script>

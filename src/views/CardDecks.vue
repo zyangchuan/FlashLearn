@@ -1,19 +1,29 @@
 <template>
   
     <v-container>
-      <h1 class="text-h4 font-weight-bold my-10">Card Decks</h1>
+      <h1 class="text-h5 text-sm-h4 text-md-h4 text-lg-h4 font-weight-bold my-10">Card Decks</h1>
       <div class="d-flex flex-xl-row flex-lg-row flex-md-row flex-sm-row flex-column align-center flex-wrap">
         <div class="addcard pa-14 ma-4" v-on:mouseover="addcardcolor = '#c0ffff'" v-on:mouseleave="addcardcolor = '#55ffff'"
           v-on:click="addoverlay = !addoverlay">
 
           <p class="addcardtext text-h5 font-weight-light text-center mt-6">Add a new card deck</p>
-          <v-overlay v-model="addoverlay" scrim="black" class="justify-center align-center">
-            <AddNewDeck v-on:closeOverlay="addoverlay = false" v-on:deckAdded="loadDecks"/>
+          <v-overlay v-model="addoverlay" scrim="black" class="justify-center align-center addnewdeck">
+            <AddNewDeck
+              v-on:closeOverlay="addoverlay = false" 
+              v-on:deckAdded="loadDecks"/>
+          </v-overlay>
+
+          <v-overlay v-model="loadingOverlay" scrim="black" class="align-center justify-center">
+            <v-progress-circular
+              indeterminate
+              size="64"
+              color="primary"
+            ></v-progress-circular>
           </v-overlay>
 
         </div>
         
-        <v-card class="pa-6 ma-4 rounded-xl" color="white" width="230" height="260" v-for="deck in decks"
+        <v-card class="pa-6 ma-4 rounded-lg" color="white" width="230" height="260" v-for="deck in decks"
           v-bind:key="deck.deckid">
 
           <div class="d-flex flex-column 
@@ -35,7 +45,9 @@
 
               <v-tooltip text="Edit" location="top">
                 <template v-slot:activator="{ props }">
-                  <v-btn icon="mdi-pencil" color="black" size="small" class="mx-3" v-bind="props"></v-btn>
+                  <v-btn icon="mdi-pencil" color="black" 
+                    size="small" class="mx-3" 
+                    v-bind="props" v-on:click="goEditDeck(deck.deckid, deck.deckname)"></v-btn>
                 </template>
               </v-tooltip>
 
@@ -75,6 +87,7 @@ export default {
       decks: [],
       addcardcolor: "#00ffff",
       addoverlay: false,
+      loadingOverlay: true,
       msg: ""
     }
   },
@@ -82,7 +95,6 @@ export default {
     if (!this.$store.state.isAuthenticated) {
       this.$router.push({ name: "Signin" })
     } else {
-      console.log(this.$store.state.currentUser)
       this.username = this.$store.state.currentUser.attributes.preferred_username
     }
 
@@ -97,16 +109,20 @@ export default {
         },
         params: {
           "userid": this.$store.state.currentUser.attributes.sub
-        },
+        }
       }
       axios.get('https://f4ng7av2s6.execute-api.ap-southeast-1.amazonaws.com/flashlearn-test/card-decks', loadDecks_config)
         .then(response => {
           this.decks = response.data
-          console.log(response.data)
+          this.loadingOverlay = false
         })
         .catch(error => {
           console.log(error)
         })
+    },
+    goEditDeck(deckid, deckname) {
+      this.$store.commit('setCurrentDeckID', deckid)
+      this.$router.push({ name: 'EditDeck', params: { deckname: deckname } })
     }
   }
 }
@@ -114,11 +130,15 @@ export default {
 </script>
 
 <style>
+.addnewdeck > .v-overlay__content  {
+  width: 100%;
+}
+
 .addcard {
   width: 230px;
   height: 260px;
   border: 2px dashed v-bind(addcardcolor);
-  border-radius: 24px;
+  border-radius: 12px;
   cursor: pointer;
 }
 

@@ -1,8 +1,8 @@
 <template>
   <v-container>
 
-    <h1 class="text-h4 font-weight-bold my-10">Account</h1>
-    <v-card class="pa-6 w-75">
+    <h1 class="text-h5 text-sm-h4 text-md-h4 text-lg-h4 font-weight-bold my-10">Account</h1>
+    <v-card class="pa-6" max-width="800px">
       <div class="d-flex flex-row align-center">
         <v-avatar size="100" class="mb-2">
           <v-img cover src="/avatar.jpg"></v-img>
@@ -13,7 +13,7 @@
       <v-card class="d-flex flex-column justify-space-between pa-5 mt-6" color="rgb(50,50,50)">
         <div class="d-flex flex-row align-center justify-space-between">
           <div class="w-50">
-            <p class="text-subtitle-1 font-weight-medium text-uppercase text-grey-lighten-1">Username</p>
+            <p class="text-subtitle-2 text-sm-subtitle-1 text-md-subtitle-1 text-lg-subtitle-1 font-weight-medium text-uppercase text-grey-lighten-1">Username</p>
             <v-text-field
               density="compact" 
               class="mb-n7" 
@@ -21,7 +21,7 @@
               v-if="editingUsername"
               v-model="edit_username">
             </v-text-field>
-            <p class="text-h6 font-weight-light text-white" v-else>{{ edit_username }}</p>
+            <p class="text-subtitle-1 text-sm-h6 text-md-h6 text-lg-h6 font-weight-light text-white" v-else>{{ edit_username }}</p>
           </div>
           <v-btn color="white" variant="outlined" size="small"
             v-on:click="editingUsername = !editingUsername"
@@ -38,8 +38,8 @@
         </div>
         <div class="d-flex flex-row align-center justify-space-between">
           <div class="w-50 my-5">
-            <p class="text-subtitle-1 font-weight-medium text-uppercase text-grey-lighten-1">Email</p>
-            <p class="text-h6 font-weight-light text-white">{{ email }}</p>
+            <p class="text-subtitle-2 text-sm-subtitle-1 text-md-subtitle-1 text-lg-subtitle-1 font-weight-medium text-uppercase text-grey-lighten-1">Email</p>
+            <p class="text-subtitle-1 text-sm-h6 text-md-h6 text-lg-h6 font-weight-light text-white">{{ email }}</p>
           </div>
         </div>
 

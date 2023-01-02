@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Signin from '../views/Signin.vue'
 import Signup from '../views/Signup.vue'
 import CardDecks from '../views/CardDecks.vue'
+import EditDeck from '../views/EditDeck.vue'
 import Account from '../views/Account.vue'
 
 const routes = [
@@ -22,7 +23,13 @@ const routes = [
   {
     path: '/card-decks',
     name: 'CardDecks',
-    component: CardDecks
+    component: CardDecks,
+  },
+  {
+    path: '/card-decks/edit-deck/:deckname',
+    name: 'EditDeck',
+    component: EditDeck,
+    props: true
   },
   {
     path: '/account',

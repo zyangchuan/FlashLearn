@@ -2,10 +2,10 @@
   <v-app-bar app size="large">
     <v-app-bar-nav-icon color="white" v-on:click="drawer = !drawer"></v-app-bar-nav-icon>
     <v-app-bar-title>
-      <span class="font-weight-light">FlashLearn</span>
+      <span class="font-weight-light text-body-1 text-sm-h6">FlashLearn</span>
     </v-app-bar-title>
     <v-spacer></v-spacer>
-    <p class="h6 mx-6 font-weight-medium">Hello {{ username }}</p>
+    <p class="h6 mx-6 font-weight-medium hidden-sm-and-down">Hello {{ username }}</p>
     <v-btn 
       color="white"
       prepend-icon="mdi-exit-to-app"

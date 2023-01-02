@@ -1,13 +1,13 @@
 <template>
-  <v-card class="pa-7" width="530" v-if="!confirmed">
+  <v-card class="py-7 px-md-7 px-lg-7 px-sm-7 px-3 mx-auto" max-width="530px" v-if="!confirmed">
     <p 
-      class="text-h4 
+      class="text-h5 text-sm-h4 text-md-h4 text-lg-h4
       font-weight-medium 
       text-center">
       Confirm your account
     </p>
 
-    <p class="my-10 text-center">Enter the confirmation code that has been sent to your email.</p>
+    <p class="my-10 mx-4 text-center">Enter the confirmation code that has been sent to your email.</p>
 
     <v-form v-model="validated">
       <div class="mx-4 mt-6">
@@ -52,27 +52,21 @@
 
   </v-card>
 
-  <v-card class="d-flex flex-column pa-7 justify-center align-center" width="530" height="280" v-if="confirmed">
+  <v-card class="d-flex flex-column pa-5 justify-center align-center mx-auto" max-width="530" height="250" v-if="confirmed">
     <p 
-      class="text-h4 
+      class="text-h5 text-sm-h4 text-md-h4 text-lg-h4 
       font-weight-medium 
       text-center
       mb-10">
       Your account has been created successfully!
     </p>
-
-    <div class="d-flex mx-4 justify-center">
-      
-      <v-btn 
-        color="white"
-        size="large"
-        v-bind:loading="loading"
-        v-on:click="login">
-        <v-icon icon="mdi-login" class="mr-2"></v-icon>
-        <span>Sign in</span>
-      </v-btn>
-      
-    </div>
+    <v-btn 
+      color="white"
+      v-bind:loading="loading"
+      v-on:click="login">
+      <v-icon icon="mdi-login" class="mr-2"></v-icon>
+      <span>Sign in</span>
+    </v-btn>
   </v-card>
 </template>
 
