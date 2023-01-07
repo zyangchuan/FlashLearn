@@ -10,7 +10,7 @@
       </v-overlay>
       
       <div class="d-flex justify-space-between align-center">
-        <h1 class="text-h5 text-sm-h4 font-weight-bold my-10">Study {{ deckname }}</h1>
+        <h1 class="text-h5 text-sm-h4 font-weight-bold my-10">Studying {{ deckname }}</h1>
         <v-btn variant="outlined" prepend-icon="mdi-arrow-left" class="text-capitalize" v-bind:to="{ name: 'CardDecks' }">Back</v-btn>
       </div>
       <div class="w-75 mx-auto mt-10">
@@ -61,6 +61,18 @@
         </v-col>
       </v-row>
     </div>
+    <v-overlay v-model="completeOverlay" scrim="black" class="justify-center align-center">
+      <div style="max-width: 500px;">
+        <v-card
+          class="pa-6 mx-5">
+          <p class="text-h6 font-weight-light text-center">Good job! You finished studying this deck!</p>
+          <div class="d-flex justify-center mt-6">
+            <v-btn variant="flat" class="text-capitalize" v-on:click="studyAgain()">Study Again</v-btn>
+            <v-btn variant="flat" class="text-capitalize" v-on:click="finish()">Finish</v-btn>
+          </div>
+        </v-card>
+      </div>
+    </v-overlay>
   </v-container>
 </template>
 
@@ -71,7 +83,8 @@ export default {
   props: ['deckname'],
   data () {
     return {
-      loadingOverlay: true,
+      loadingOverlay: false,
+      completeOverlay: false,
       isflipped: false,
       nFLoading: false,
       nSLoading: false,
@@ -86,24 +99,8 @@ export default {
   },
   methods: {
     loadCards() {
-      const loadCards_config = {
-        headers: {
-          "Authorization": this.$store.state.currentUser.signInUserSession.idToken.jwtToken
-        },
-        params: {
-          "deckid": this.$store.state.currentDeckID
-        }
-      }
-      axios.get('https://f4ng7av2s6.execute-api.ap-southeast-1.amazonaws.com/flashlearn-test/card-decks/study', loadCards_config)
-        .then((response) => {
-          this.$store.commit("createCardStack", response.data)
-          this.totalCardsLength = this.$store.state.studyCards.stack.length
-          this.currentCard = this.$store.state.studyCards.pop()
-          this.loadingOverlay = false
-        })
-        .catch((error) => {
-          console.log(error)
-        })
+      this.totalCardsLength = this.$store.state.studyCards.cardCount()
+      this.currentCard = this.$store.state.studyCards.pop()
     },
     notFamiliar(card) {
       card.familiarity -= 2
@@ -172,13 +169,24 @@ export default {
           this.fLoading = false
           this.noOfCardsStudied ++
           if (this.$store.state.studyCards.isEmpty()) {
-            this.$router.push({ name: 'CardDecks' })
+            this.completeOverlay = true
           }
           this.currentCard = this.$store.state.studyCards.pop()
         })
         .catch(error => {
           console.log(error)
         })
+    },
+    async studyAgain() {
+      this.completeOverlay = false
+      this.loadingOverlay = true
+      await this.$store.dispatch("loadCards", this.$store.state.currentDeckID)
+      this.loadCards()
+      this.loadingOverlay = false
+      this.noOfCardsStudied = 0
+    },
+    finish() {
+      this.$router.push({ name: 'CardDecks' })
     }
   }
 

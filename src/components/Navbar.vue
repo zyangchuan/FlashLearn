@@ -68,7 +68,6 @@ export default {
         await Auth.signOut()
         this.$store.commit("setCurrentUser", null)
         this.$router.push({ name: "Signin" })
-        console.log(this.$store.state.currentUser)
       } catch (error) {
         console.log('error signing out: ', error);
       }

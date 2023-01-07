@@ -7,7 +7,7 @@ export class cardStack {
     this.stack.push(card);
   }
   pop() {
-    if (this.stack.length == 0) {
+    if (this.isEmpty()) {
       return "stack is empty";
     }
     else {
@@ -31,5 +31,8 @@ export class cardStack {
   }
   isEmpty() {
     return this.stack.length === 0
+  }
+  cardCount() {
+    return this.stack.length
   }
 }

@@ -10,6 +10,19 @@
             color="primary"
           ></v-progress-circular>
         </v-overlay>
+
+        <v-overlay v-model="noCardOverlay" scrim="black" class="justify-center align-center">
+          <div style="max-width: 500px;">
+            <v-card
+              class="pa-6 mx-5">
+              <p class="text-h6 font-weight-light text-center">This deck does not have any cards</p>
+              <div class="d-flex flex-column align-center mt-6">
+                <v-btn variant="flat" class="text-capitalize" v-on:click="goEditDeck(editdeck)">Go Create Cards</v-btn>
+                <v-btn variant="flat" class="text-capitalize" v-on:click="closeNoCardOverlay()">Close</v-btn>
+              </div>
+            </v-card>
+          </div>
+        </v-overlay>
         
         <div class="addcard pa-14 ma-4" v-on:mouseover="addcardcolor = '#c0ffff'" v-on:mouseleave="addcardcolor = '#55ffff'"
           v-on:click="addoverlay = true">
@@ -38,7 +51,8 @@
               <v-tooltip text="Study" location="top">
                 <template v-slot:activator="{ props }">
                   <v-btn icon="mdi-play" color="black" 
-                  size="small" v-bind="props" v-on:click="goStudyDeck(deck.deckid, deck.deckname)">
+                    size="small" v-bind="props" :loading="deck.playLoading"
+                    v-on:click="goStudyDeck(deck)">
                   </v-btn>
                 </template>
               </v-tooltip>
@@ -47,7 +61,7 @@
                 <template v-slot:activator="{ props }">
                   <v-btn icon="mdi-pencil" color="black" 
                     size="small" class="mx-3" 
-                    v-bind="props" v-on:click="goEditDeck(deck.deckid, deck.deckname)"></v-btn>
+                    v-bind="props" v-on:click="goEditDeck(deck)"></v-btn>
                 </template>
               </v-tooltip>
             </div>
@@ -83,8 +97,10 @@ export default {
     return {
       username: "",
       decks: [],
+      editdeck: {},
       addcardcolor: "#00ffff",
       addoverlay: false,
+      noCardOverlay: false,
       loadingOverlay: true,
       msg: ""
     }
@@ -118,13 +134,27 @@ export default {
           console.log(error)
         })
     },
-    goEditDeck(deckid, deckname) {
-      this.$store.commit('setCurrentDeckID', deckid)
-      this.$router.push({ name: 'EditDeck', params: { deckname: deckname } })
+    goEditDeck(deck) {
+      this.$store.commit('setCurrentDeckID', deck.deckid)
+      this.$router.push({ name: 'EditDeck', params: { deckname: deck.deckname } })
     },
-    goStudyDeck(deckid, deckname) {
-      this.$store.commit('setCurrentDeckID', deckid)
-      this.$router.push({ name: 'StudyDeck', params: { deckname: deckname } })
+    async goStudyDeck(deck) {
+      deck.playLoading = true
+      await this.$store.dispatch("loadCards", deck.deckid)
+      if (this.$store.state.studyCards.cardCount() == 0) {
+        this.playLoading = false
+        this.openNoCardOverlay(deck)
+      } else {
+        this.$router.push({ name: 'StudyDeck', params: { deckname: deck.deckname } })
+      }
+    },
+    openNoCardOverlay (deck) {
+      this.noCardOverlay = true
+      this.editdeck = deck
+    },
+    closeNoCardOverlay () {
+      this.noCardOverlay = false
+      this.editdeck.playLoading = false
     }
   }
 }
