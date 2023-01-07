@@ -73,8 +73,7 @@ export default {
         }
 
       axios.post('https://f4ng7av2s6.execute-api.ap-southeast-1.amazonaws.com/flashlearn-test/card-decks', deckInfo, addDeck_config)
-        .then(response => {
-          console.log(response)
+        .then(() => {
           this.$emit("deckAdded")
         })
         .catch(error => {

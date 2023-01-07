@@ -127,7 +127,7 @@ export default ({
     }
   },
   mounted () {
-    if (this.$store.state.isAuthenticated) {
+    if (this.$store.state.currentUser) {
       this.$router.push({ name: 'CardDecks' })
     }
   },

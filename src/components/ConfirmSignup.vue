@@ -121,7 +121,6 @@ export default {
         const user = await Auth.currentAuthenticatedUser()
           
         this.$store.commit("setCurrentUser", user)
-        this.$store.commit("setAuthenticationState", true)
 
         //assign the preferred user name to the user's account
         console.log(user)

@@ -75,7 +75,7 @@ export default {
         .catch(error => {
           console.log(error)
         })
-      this.$emit("deckEdited")
+      this.$emit("deckEdited", this.deckName)
     }
   }
 }

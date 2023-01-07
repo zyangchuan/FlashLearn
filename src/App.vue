@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-main>
-      <Navbar v-if="this.$store.state.isAuthenticated"/>
+      <Navbar v-if="!!this.$store.state.currentUser"/>
       <router-view/>
     </v-main>
   </v-app>

@@ -1,6 +1,7 @@
 import { createStore } from 'vuex'
 import { Auth } from 'aws-amplify'
 import VuexPersistence from 'vuex-persist'
+import { cardStack } from '../functions/cardstack.js'
 
 const vuexLocal = new VuexPersistence({
   storage: window.localStorage
@@ -10,18 +11,18 @@ export const store = createStore ({
   plugins: [vuexLocal.plugin],
   state: {
     currentUser: null,
-    isAuthenticated: false,
-    currentDeckID: ""
+    currentDeckID: "",
+    studyCards: null
   },
   mutations: {
     setCurrentUser (state, user) {
       state.currentUser = user
     },
-    setAuthenticationState (state, bool) {
-      state.isAuthenticated = bool
-    },
     setCurrentDeckID (state, deckid) {
       state.currentDeckID = deckid
+    },
+    createCardStack (state, cards) {
+      state.studyCards = new cardStack(cards)
     }
   },
   actions: {
@@ -29,7 +30,6 @@ export const store = createStore ({
       Auth.currentAuthenticatedUser()
         .then (user => {
           context.commit("setCurrentUser", user)
-          context.commit("setAuthenticationState", true)
         })
         .catch (error => {
           console.log(error)

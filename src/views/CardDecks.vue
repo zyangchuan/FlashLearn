@@ -3,8 +3,16 @@
     <v-container>
       <h1 class="text-h5 text-sm-h4 text-md-h4 text-lg-h4 font-weight-bold my-10">Card Decks</h1>
       <div class="d-flex flex-xl-row flex-lg-row flex-md-row flex-sm-row flex-column align-center flex-wrap">
+        <v-overlay v-model="loadingOverlay" scrim="black" class="align-center justify-center">
+          <v-progress-circular
+            indeterminate
+            size="64"
+            color="primary"
+          ></v-progress-circular>
+        </v-overlay>
+        
         <div class="addcard pa-14 ma-4" v-on:mouseover="addcardcolor = '#c0ffff'" v-on:mouseleave="addcardcolor = '#55ffff'"
-          v-on:click="addoverlay = !addoverlay">
+          v-on:click="addoverlay = true">
 
           <p class="addcardtext text-h5 font-weight-light text-center mt-6">Add a new card deck</p>
           <v-overlay v-model="addoverlay" scrim="black" class="justify-center align-center addnewdeck">
@@ -12,15 +20,6 @@
               v-on:closeOverlay="addoverlay = false" 
               v-on:deckAdded="loadDecks"/>
           </v-overlay>
-
-          <v-overlay v-model="loadingOverlay" scrim="black" class="align-center justify-center">
-            <v-progress-circular
-              indeterminate
-              size="64"
-              color="primary"
-            ></v-progress-circular>
-          </v-overlay>
-
         </div>
         
         <v-card class="pa-6 ma-4 rounded-lg" color="white" width="230" height="260" v-for="deck in decks"
@@ -38,7 +37,8 @@
 
               <v-tooltip text="Study" location="top">
                 <template v-slot:activator="{ props }">
-                  <v-btn icon="mdi-play" color="black" size="small" v-bind="props">
+                  <v-btn icon="mdi-play" color="black" 
+                  size="small" v-bind="props" v-on:click="goStudyDeck(deck.deckid, deck.deckname)">
                   </v-btn>
                 </template>
               </v-tooltip>
@@ -50,7 +50,6 @@
                     v-bind="props" v-on:click="goEditDeck(deck.deckid, deck.deckname)"></v-btn>
                 </template>
               </v-tooltip>
-
             </div>
           </div>
 
@@ -75,12 +74,11 @@
 </template>
 
 <script>
-import Navbar from "../components/Navbar.vue"
 import AddNewDeck from "../components/AddNewDeck.vue"
 import axios from 'axios'
 
 export default {
-  components: { Navbar, AddNewDeck },
+  components: { AddNewDeck },
   data() {
     return {
       username: "",
@@ -91,8 +89,8 @@ export default {
       msg: ""
     }
   },
-  created() {
-    if (!this.$store.state.isAuthenticated) {
+  mounted() {
+    if (!this.$store.state.currentUser) {
       this.$router.push({ name: "Signin" })
     } else {
       this.username = this.$store.state.currentUser.attributes.preferred_username
@@ -123,6 +121,10 @@ export default {
     goEditDeck(deckid, deckname) {
       this.$store.commit('setCurrentDeckID', deckid)
       this.$router.push({ name: 'EditDeck', params: { deckname: deckname } })
+    },
+    goStudyDeck(deckid, deckname) {
+      this.$store.commit('setCurrentDeckID', deckid)
+      this.$router.push({ name: 'StudyDeck', params: { deckname: deckname } })
     }
   }
 }

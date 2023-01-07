@@ -8,12 +8,12 @@
         <p class="caption
           font-weight-light
           my-2">
-          Number of cards: <v-chip class="mx-5" color="yellow" size="large">{{ NoOfCards }} cards</v-chip>
+          Number of cards: <v-chip class="mx-5" color="yellow-lighten-2" size="large">{{ NoOfCards }} cards</v-chip>
         </p>
 
         <v-slider
           class="mt-5"
-          color="yellow"
+          color="yellow-lighten-2"
           v-model="NoOfCards"
           :min="0"
           :max="10"
@@ -36,7 +36,7 @@
 
       </div>
       <div class="d-flex justify-end ml-5">
-        <v-btn flat v-bind:loading="generating" v-on:click="genCards" class="text-yellow">Generate cards</v-btn>
+        <v-btn flat v-bind:loading="generating" v-on:click="genCards" class="text-yellow-lighten-2">Generate cards</v-btn>
         <v-btn flat v-on:click="closeOverlay">Cancel</v-btn>
       </div> 
     </v-card>

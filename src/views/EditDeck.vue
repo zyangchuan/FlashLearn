@@ -21,9 +21,18 @@
     <v-overlay v-model="editDeckOverlay" scrim="black" class="justify-center align-center editdeckdetails">
       <EditDeckDetails 
         v-on:closeOverlay="editDeckOverlay = false" 
-        v-on:deckEdited="loadDeck"
+        v-on:deckEdited="loadNewDeck"
         v-bind:deckname="deckname"
         v-bind:descp="deck_descp"/>
+    </v-overlay>
+
+    <v-overlay v-model="editCardOverlay" scrim="black" class="justify-center align-center editcard">
+      <EditCard 
+        v-on:closeOverlay="editCardOverlay = false" 
+        v-on:cardUpdated="loadDeck"
+        v-bind:cardid="editCardID"
+        v-bind:question="editCardQuestion"
+        v-bind:answer="editCardAnswer"/>
     </v-overlay>
 
     <v-overlay v-model="deleteCardOverlay" scrim="black" class="justify-center align-center">
@@ -32,7 +41,7 @@
           class="pa-6 mx-5">
           <p class="text-h6 font-weight-light text-center">Are you sure you want to delete this card?</p>
           <div class="d-flex justify-end mt-6">
-            <v-btn variant="flat" class="text-red" v-on:click="deleteCard(deletecardid)">Yes, Delete</v-btn>
+            <v-btn variant="flat" class="text-red" v-on:click="deleteCard(deleteCardID)">Yes, Delete</v-btn>
             <v-btn variant="flat" v-on:click="deleteCardOverlay = false">No, Keep it</v-btn>
           </div>
         </v-card>
@@ -99,28 +108,19 @@
               >
                 <div class="card-container">
                   <div class="cardface cardface-front">
-                    <p class="text-body-1 text-black font-weight-medium">{{ card.question }}</p>
+                    <p class="text-h6 text-black">{{ card.question }}</p>
                     <p class="text-body-1 text-uppercase text-blue-lighten-2 text-center">Question</p>
                   </div>
                   <div class="cardface cardface-back">
-                    <p class="text-body-1 text-black">{{ card.answer }}</p>
+                    <p class="text-body-1 font-weight-medium text-black">{{ card.answer }}</p>
                     <p class="text-body-1 text-uppercase text-green-lighten-2 text-center">Answer</p>
                   </div>
                 </div>
               </div>
 
-              <v-overlay v-model="editCardOverlay" scrim="black" class="justify-center align-center editcard">
-                <EditCard 
-                  v-on:closeOverlay="editCardOverlay = false" 
-                  v-on:cardUpdated="loadDeck"
-                  v-bind:cardid="card.cardid"
-                  v-bind:question="card.question"
-                  v-bind:answer="card.answer"/>
-              </v-overlay>
-
               <div>
                 <v-chip class="mx-2 text-red" v-on:click="goDeleteCard(card.cardid)" link>Delete</v-chip>
-                <v-chip class="mx-2 text-blue" v-on:click="editCardOverlay = true" link>Edit</v-chip>
+                <v-chip class="mx-2 text-blue" v-on:click="goEditCard(card.cardid, card.question, card.answer)" link>Edit</v-chip>
               </div>
             </div>
               
@@ -155,7 +155,7 @@
           <v-btn 
             variant="outlined" 
             prepend-icon="mdi-flash" 
-            class="text-yellow text-capitalize" 
+            class="text-yellow-lighten-2 text-capitalize" 
             width="120"
             v-on:click="flashGenOverlay = true">FlashGen</v-btn>
         </div>
@@ -173,11 +173,9 @@ import EditCard from "../components/EditCard.vue"
 import CreateCard from "../components/CreateCard.vue"
 import FlashGen from "../components/FlashGen.vue"
 
-
 export default {
   props: ['deckname'],
   components: { EditDeckDetails, EditCard, CreateCard, FlashGen },
-  deckInfo: {},
   data() {
     return {
       deck_descp: "",
@@ -188,11 +186,18 @@ export default {
       createCardOverlay: false,
       flashGenOverlay: false,
       loadingOverlay: true,
-      deletecardid: "",
-      cards: []
+      deleteCardID: "",
+      editCardID: "",
+      editCardQuestion: "",
+      editCardAnswer: "",
+      cards: [],
+      deckInfo: {},
     }
   },
   methods: {
+    loadNewDeck (newname) {
+      this.$router.push({ name: "EditDeck", params: { deckname: newname } })
+    },
     loadDeck () {
       const loadDeck_config = {
         headers: {
@@ -207,12 +212,11 @@ export default {
         .then(response => {
           this.deck_descp = response.data.descp
           this.cards = response.data.cards
+          this.loadingOverlay = false
         })
         .catch(error => {
           console.log(error)
         })
-
-      this.loadingOverlay = false
     },
     deleteDeck() {
       const deleteDeck_config = {
@@ -234,7 +238,13 @@ export default {
     },
     goDeleteCard (cardid) {
       this.deleteCardOverlay = true
-      this.deletecardid = cardid
+      this.deleteCardID = cardid
+    },
+    goEditCard (cardid, question, answer) {
+      this.editCardOverlay = true
+      this.editCardID = cardid
+      this.editCardQuestion = question
+      this.editCardAnswer = answer
     },
     deleteCard (cardid) {
       const deleteCard_config = {
