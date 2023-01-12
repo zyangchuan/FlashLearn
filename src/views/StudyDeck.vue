@@ -236,10 +236,12 @@ export default {
     -webkit-backface-visibility: hidden; /* Safari */
     backface-visibility: hidden;
     transform: rotateY(180deg);
+    -webkit-transform: rotateY(180deg);
   }
 
   .isflipped .card-container{
     transform: rotateY(180deg);
+    -webkit-transform: rotateY(180deg);
   }
 
 </style>
