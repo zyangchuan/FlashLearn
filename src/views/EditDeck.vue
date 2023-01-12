@@ -294,6 +294,7 @@ export default {
     height: 250px;
     width: 200px;
     perspective: 1000px;
+    -webkit-perspective: 1000px;
     cursor: pointer;
   }
 
@@ -303,7 +304,9 @@ export default {
     height: 100%;
     border-radius: 12px;
     transition: transform 0.6s;
+    -webkit-transition: transform 0.6s;
     transform-style: preserve-3d;
+    -webkit-transform-style: preserve-3d;
     background-color: white;
   }
 
@@ -329,8 +332,6 @@ export default {
     padding: 12px;
     -webkit-backface-visibility: hidden; /* Safari */
     backface-visibility: hidden;
-    transform: rotateY(180deg);
-    -webkit-transform: rotateY(180deg);
   }
 
   .isflipped .card-container{
