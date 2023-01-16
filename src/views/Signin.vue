@@ -3,7 +3,6 @@
   <v-container class="d-flex justify-center align-center fill-height">
 
       <v-row class="justify-center align-center">
-        
         <v-col cols="12" sm="12" v-if="!unconfirmed">
           <div class="hidden-md-and-up">
             <h1 class="text-h4 font-weight-light text-center">FlashLearn</h1>
@@ -11,80 +10,66 @@
         </v-col> 
 
         <v-col cols="12" sm="12" md="6" lg="6" v-if="!unconfirmed">
-            <v-card class="py-7 px-md-7 px-lg-7 px-sm-7 px-3 mx-auto" max-width="500px">
-              <p 
-                class="text-h5 text-sm-h4 text-md-h4 text-lg-h4
-                font-weight-medium 
-                text-center">
+          <AuthForm ref="signInForm">
+            <template v-slot:headers>
+              <p class="text-h5 text-sm-h4 font-weight-medium text-center">
                 Welcome
               </p>
-
-              <p 
-                class="text-subtitle-1 
-                font-weight-medium 
-                text-center
-                ma-2">
+              <p class="text-subtitle-1 font-weight-medium text-center">
                 Sign in to begin!
               </p>
+            </template>
+            
+            <template v-slot:fields>
+              <p class="caption font-weight-light my-2">
+                Username or Email Address
+              </p>
+
+              <v-text-field 
+                label="Username/Email"
+                prepend-inner-icon="mdi-account"
+                v-model="email"
+                v-bind:rules="[validation.required]"
+              >
+              </v-text-field>
+
+              <p class="caption font-weight-light my-2">
+                Password
+              </p>
+
+              <v-text-field
+                type="password" 
+                label="Password" 
+                prepend-inner-icon="mdi-key" 
+                v-model="password"
+                v-bind:rules="[validation.required]"
+              >
+              </v-text-field>
+
+              <p class="text-subtitle-1 text-red text-center">{{ signInError }}</p>
+
+            </template>
+            <template v-slot:buttons>
+              <v-btn
+                class="my-2"
+                color="white"
+                size="large"
+                v-on:click="signInForm.form.validate(), signInPageSignIn()"
+                v-bind:loading="signInLoading"
+              >
+                <v-icon icon="mdi-login"></v-icon>
+                <span>Sign in</span>
+              </v-btn>
               
-              <div class="mx-4 mt-10 mt-sm-15 mt-md-15 mt-lg-15
-                mb-sm-6 mb-md-6 mb-lg-6">
-
-                <p 
-                  class="caption
-                  font-weight-light
-                  text-uppercase
-                  ma-2 ml-0">
-                  Username or email
-                </p>
-
-                <v-text-field 
-                  label="Username/Email"
-                  prepend-inner-icon="mdi-account"
-                  v-model="email"
-                  v-bind:rules="[required]">
-                </v-text-field>
-
-                <p 
-                  class="caption
-                  font-weight-light
-                  text-uppercase
-                  ma-2 ml-0">
-                  Password
-                </p>
-
-                <v-text-field
-                  type="password" 
-                  label="Password" 
-                  prepend-inner-icon="mdi-key" 
-                  v-model="password"
-                  v-bind:rules="[required]">
-                </v-text-field>
-
-              </div>
-
-              <p class="text-subtitle-1 text-red text-center">{{ errorMsg }}</p>
-
-              <div class="d-flex flex-column align-center mt-10">
-                <v-btn 
-                  color="white"
-                  size="large"
-                  v-on:click="login"
-                  v-bind:loading="loading">
-                  <v-icon icon="mdi-login" class="mr-2"></v-icon>
-                  <span>Sign in</span>
-                </v-btn>
-                
-                <v-btn 
-                  variant="text"
-                  class="mt-6"
-                  v-bind:to="{ name: 'Signup' }">
-                  Sign up
-                </v-btn>
-              </div>
-
-            </v-card>
-          
+              <v-btn 
+                class="my-2"
+                variant="text"
+                v-bind:to="{ name: 'Signup' }"
+              >
+                Sign up
+              </v-btn>
+            </template>
+          </AuthForm>
         </v-col>
         
         <v-col md="6" lg="6" v-if="!unconfirmed">
@@ -100,82 +85,71 @@
             v-bind:resendCode="true"
             v-if="unconfirmed"/>
         </v-col>
-        
       </v-row>
-
   </v-container>
-
-  
-    
 </template>
 
 <script>
+import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import ConfirmSignup from "../components/ConfirmSignup.vue"
-import { Auth } from "aws-amplify"
-
-// Components
+import AuthForm from "../components/AuthForm.vue"
+import { signIn } from "../composables/userAuth"
+import validation from "../composables/validation"
+import { useStore } from 'vuex'
 
 export default ({
-  components: { ConfirmSignup },
-  data () {
-    return {
-      email: "",
-      password: "",
-      unconfirmed: false,
-      loading: false,
-      errorMsg: ""
-    }
-  },
-  mounted () {
-    if (this.$store.state.currentUser) {
-      this.$router.push({ name: 'CardDecks' })
-    }
-  },
-  methods: {
-    async login () {
-      try {
-        this.loading = true
-        await Auth.signIn(this.email, this.password)
-        this.$store.dispatch("getAuthentication")
-        this.$router.push({ name: "CardDecks" })
-      
-      } catch (error) {
-        console.log("signin error:", error)
+  components: { ConfirmSignup, AuthForm },
+  setup() {
+    const router = useRouter() //Router object
+    const store = useStore() //Vuex store object
 
-        switch (error.name) {
-          case "UserNotConfirmedException": 
-            this.unconfirmed = true
-            break
-          case "NotAuthorizedException":
-            this.loading = false
-            this.errorMsg = "Incorrect username or password."
-            break
-        }
+    //Form input validation
+    const signInForm = ref(null) //Reference to the sign in form (AuthForm component)
+    
+    //Handle sign in
+    const unconfirmed = ref(false) //Render the confirmation window if this is true
+    const signInError = ref("")
+    const { email, password, signInLoading, cognitoSignIn } = signIn()
+
+    //Sign in page function
+    const signInPageSignIn = () => {
+      if (signInForm.value.validated) { //Do not run if the inputs are invalid
+        cognitoSignIn (email.value, password.value)
+          //If successful
+          .then(() => {
+            router.push({ name: 'CardDecks' }) //Redirect to the Card Decks page
+          })
+          //If unsuccessful
+          .catch(error => {
+            switch (error.name) { //Handle different errors
+              case "UserNotConfirmedException": //If the user is not confirmed
+                unconfirmed.value = true //Render the confirmation page
+                break
+              case "NotAuthorizedException": //If the credentials are incorrect
+                signInError.value = "Incorrect username or password." //Display error
+                break
+            }
+          })
       }
-    },
-    required(value) {
-      if (value) {
-        return true
-      } else {
-        return "This field is required."
+    }
+
+    onMounted(() => {
+      if (store.getters.isAuthenticated) {
+        router.push({ name: 'CardDecks' })
       }
+    })
+
+    return { 
+      email, 
+      password, 
+      unconfirmed,
+      signInLoading, 
+      signInError, 
+      signInPageSignIn, 
+      signInForm, 
+      validation,
     }
   }
 })
 </script>
-
-<style>
-  .custom-loader {
-    animation: loader 1s infinite;
-    display: flex;
-  }
-
-  @keyframes loader {
-    from {
-      transform: rotate(0);
-    }
-    to {
-      transform: rotate(360deg);
-    }
-  }
-</style>

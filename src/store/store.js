@@ -15,6 +15,9 @@ export const store = createStore ({
     currentDeckID: "",
     studyCards: null
   },
+  getters: {
+    isAuthenticated: state => state.currentUser !== null
+  },
   mutations: {
     setCurrentUser (state, user) {
       state.currentUser = user
@@ -27,7 +30,7 @@ export const store = createStore ({
     }
   },
   actions: {
-    getAuthentication (context) {
+    setAuthentication (context) {
       Auth.currentAuthenticatedUser()
         .then (user => {
           context.commit("setCurrentUser", user)

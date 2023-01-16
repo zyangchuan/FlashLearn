@@ -5,25 +5,11 @@
       class="py-4 px-sm-4 px-md-4 px-lg-4 mx-5 fill-width">
 
       <div class="mx-7 my-5">
+        <p class="text-h6 font-weight-light mb-8">Paste your notes into the box below to generate flash cards automatically.</p>
         <p class="caption
           font-weight-light
-          my-2">
-          Number of cards: <v-chip class="mx-5" color="yellow-lighten-2" size="large">{{ NoOfCards }} cards</v-chip>
-        </p>
-
-        <v-slider
-          class="mt-5"
-          color="yellow-lighten-2"
-          v-model="NoOfCards"
-          :min="0"
-          :max="10"
-          :step="1"
-          thumb-label
-        ></v-slider>
-
-        <p class="caption
-          font-weight-light
-          mb-2">
+          mb-2"
+        >
           Copy and paste your text here:
         </p>
 
@@ -31,7 +17,8 @@
           label="Copy and paste your text here"
           clearable
           clear-icon="mdi-close-circle"
-          v-model="text">
+          v-model="text"
+        >
         </v-textarea>
 
       </div>
@@ -50,7 +37,6 @@ import axios from 'axios'
 export default {
   data () {
     return {
-      NoOfCards: 0,
       text: "",
       generating: false
     }
@@ -69,7 +55,6 @@ export default {
         },
       }
       const text = {
-          "noofcards": this.NoOfCards,
           "text": this.text,
         }
 
