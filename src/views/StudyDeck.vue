@@ -199,6 +199,7 @@ export default {
     background-color: transparent;
     height: 320px;
     width: 270px;
+    perspective: 1000px;
   }
 
   .card-container {

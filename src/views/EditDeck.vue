@@ -109,7 +109,7 @@
                 <div class="card-container">
                   <div class="cardface-front">
                     <p class="text-h6 text-black">{{ card.question }}</p>
-                    <p class="text-body-1 text-uppercase text-blue-lighten-2 text-center">Questionss</p>
+                    <p class="text-body-1 text-uppercase text-blue-lighten-2 text-center">Questions</p>
                   </div>
                   <div class="cardface-back">
                     <p class="text-body-1 font-weight-medium text-black">{{ card.answer }}</p>
@@ -297,6 +297,7 @@ export default {
     background-color: transparent;
     height: 320px;
     width: 270px;
+    perspective: 1000px;
   }
 
   .card-container {
