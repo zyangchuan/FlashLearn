@@ -9,7 +9,9 @@
     <v-btn 
       color="white"
       prepend-icon="mdi-exit-to-app"
-      v-on:click="signOut">
+      :loading="signOutLoading"
+      v-on:click="signOut"
+    >
       Sign out
     </v-btn>
   </v-app-bar>
@@ -28,7 +30,8 @@
         title="Card decks" 
         value="carddecks"
         v-bind:to="{ name: 'CardDecks' }"
-        active-color="primary">
+        active-color="primary"
+      >
       </v-list-item>
 
       <v-list-item 
@@ -44,41 +47,68 @@
         title="Account"
         value="accounts"
         v-bind:to="{ name: 'Account' }"
-        active-color="primary">
+        active-color="primary"
+      >
       </v-list-item>
     </v-list>
-
   </v-navigation-drawer>
-
 </template>
 
 <script>
+import { ref } from '@vue/reactivity'
+import { watchEffect } from '@vue/runtime-core'
+import { useStore } from 'vuex'
 import { Auth } from "aws-amplify"
 
 export default {
-  data () {
-    return {
-      drawer: false,
-      username: ""
+  setup() {
+    const store = useStore()
+    
+    const drawer = ref(false)
+    const username = ref("")
+
+    watchEffect(() => {
+      const user = store.state.currentUser
+      username.value = user.attributes.preferred_username
+    })
+
+    const signOutLoading = ref(false)
+    const signOut = () => {
+      signOutLoading.value = true
+      Auth.signOut()
+        .then(() => {
+          store.commit("setCurrentUser", null)
+          signOutLoading.value = false
+        })
+        .catch(error => {
+          console.log(error)
+          signOutLoading.value = false
+        })
     }
-  },
-  methods: {
-    async signOut() {
-      try {
-        await Auth.signOut()
-        this.$store.commit("setCurrentUser", null)
-        this.$router.push({ name: "Signin" })
-      } catch (error) {
-        console.log('error signing out: ', error);
-      }
-    }
-  },
-  mounted() {
-    this.username = this.$store.state.currentUser.attributes.preferred_username
+
+    return { drawer, username, signOutLoading, signOut }
   }
+ 
+
+  // data () {
+  //   return {
+  //     drawer: false,
+  //     username: ""
+  //   }
+  // },
+  // methods: {
+  //   async signOut() {
+  //     try {
+  //       await Auth.signOut()
+  //       this.$store.commit("setCurrentUser", null)
+  //       this.$router.push({ name: "Signin" })
+  //     } catch (error) {
+  //       console.log('error signing out: ', error);
+  //     }
+  //   }
+  // },
+  // mounted() {
+  //   this.username = this.$store.state.currentUser.attributes.preferred_username
+  // }
 }
 </script>
-
-<style>
-
-</style>

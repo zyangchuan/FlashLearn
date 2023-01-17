@@ -1,69 +1,71 @@
 <template>
-  <v-card class="py-7 px-md-7 px-lg-7 px-sm-7 px-3 mx-auto" max-width="530px" v-if="!confirmed">
+  <AuthForm ref="confirmForm" v-if="!confirmed">
+    <template v-slot:headers>
+      <p 
+        class="text-h5 text-sm-h4
+        font-weight-medium 
+        text-center"
+      >
+        Confirm your account
+      </p>
+
+      <p 
+        class="my-10 mx-4 text-center"
+      >
+        Enter the confirmation code that has been sent to your email.
+      </p>
+    </template>
+
+    <template v-slot:fields>
+      <p class="caption font-weight-light my-2">
+        Create a username
+      </p>
+
+      <v-text-field
+        label="Username" 
+        v-model="p_username"
+        v-bind:rules="[validation.required, validation.noSpace]">
+      </v-text-field>
+
+      <p class="caption font-weight-light my-2">
+        Confirmation code
+      </p>
+
+      <v-text-field
+        type="text" 
+        label="Confirmation code" 
+        v-model="code"
+        v-bind:rules="[validation.required]">
+      </v-text-field>
+
+      <p class="text-center mb-2 text-red">{{ confirmError }}</p>
+    </template>
+
+    <template v-slot:buttons>
+      <v-btn 
+        variant="flat" 
+        :loading="confirmLoading"
+        v-on:click="confirmForm.form.validate(), confirmAcc()"
+      >
+        Continue
+      </v-btn>
+    </template>
+  </AuthForm>
+
+  <v-card class="d-flex flex-column pa-5 justify-center align-center mx-auto" max-width="500" height="250" v-if="confirmed">
     <p 
-      class="text-h5 text-sm-h4 text-md-h4 text-lg-h4
-      font-weight-medium 
-      text-center">
-      Confirm your account
-    </p>
-
-    <p class="my-10 mx-4 text-center">Enter the confirmation code that has been sent to your email.</p>
-
-    <v-form v-model="validated">
-      <div class="mx-4 mt-6">
-        <p 
-          class="caption
-          font-weight-light
-          text-uppercase
-          ma-2 ml-0">
-          Create a username
-        </p>
-
-        <v-text-field
-          label="Username" 
-          v-model="p_username"
-          v-bind:rules="[required, noSpace]">
-        </v-text-field>
-
-        <p 
-          class="caption
-          font-weight-light
-          text-uppercase
-          ma-2 ml-0">
-          Confirmation code
-        </p>
-
-        <v-text-field
-          type="text" 
-          label="Confirmation code" 
-          v-model="code"
-          v-bind:rules="[required]">
-        </v-text-field>
-            
-      </div>
-
-      <p class="text-center mb-2 text-red">{{ errorMsg }}</p>
-
-      <div class="d-flex mx-4 justify-end">
-        <v-btn flat v-on:click="confirmAcc">Continue</v-btn>
-      </div>
-    </v-form>
-    
-
-  </v-card>
-
-  <v-card class="d-flex flex-column pa-5 justify-center align-center mx-auto" max-width="530" height="250" v-if="confirmed">
-    <p 
-      class="text-h5 text-sm-h4 text-md-h4 text-lg-h4 
+      class="text-h5 text-sm-h4
       font-weight-medium 
       text-center
-      mb-10">
+      mb-10"
+    >
       Your account has been created successfully!
     </p>
     <v-btn 
       color="white"
-      v-bind:loading="loading"
-      v-on:click="login">
+      v-bind:loading="signInLoading"
+      v-on:click="confirmPageSignIn"
+    >
       <v-icon icon="mdi-login" class="mr-2"></v-icon>
       <span>Sign in</span>
     </v-btn>
@@ -71,88 +73,89 @@
 </template>
 
 <script>
+import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { Auth } from "aws-amplify"
+import AuthForm from "../components/AuthForm.vue"
+import { signIn } from "../composables/userAuth"
+import validation from "../composables/validation"
+
 
 export default {
   props: ['email', 'password', 'resendCode'],
-  data () {
-    return {
-      code: "",
-      p_username: "", //preferred user name used for login
-      confirmed: false,
-      errorMsg: "",
-      loading: false,
-      validated: false
-    }
-  },
-  methods: {
-    async confirmAcc () {
-      try {
-        if (this.validated) {
-          await Auth.confirmSignUp(this.email, this.code)
-          this.confirmed = true
-        }
+  components: { AuthForm },
+  setup(props) {
+    const router = useRouter() //Router object
 
-      } catch (error) {
-        console.log('error confirming signup: ', error)
-        if (error.name === "CodeMismatchException") {
-          this.errorMsg = "Invalid confirmation code provided, please try again."
-        }
-      }
-    },
-    required(value) {
-      if (value) {
-        return true
-      } else {
-        return "This field is required."
-      }
-    },
-    noSpace(value) {
-      if (value.match(/\s/g)) {
-        return "Do no include space in your username"
-      } else {
-        return true
-      }
-    },
-    async login () {
-      try {
-        this.loading = true
-        await Auth.signIn(this.email, this.password)
-        const user = await Auth.currentAuthenticatedUser()
-          
-        this.$store.commit("setCurrentUser", user)
+    //Form input validation
+    const confirmForm = ref() //Reference to the confirm form (AuthForm component)
 
-        //assign the preferred user name to the user's account
-        console.log(user)
-        await Auth.updateUserAttributes(user, {
-          preferred_username: this.p_username
-        })
+    //Handle confirmation
+    const code = ref("") //Confirmation code
+    const p_username = ref("") //Preferred username
+    const confirmed = ref(false) //Renders the success window if this is true
+    const confirmLoading = ref(false) //Loading spinner for confirm button
+    const confirmError = ref("")
 
-        this.$router.push({ name: "CardDecks" })
-
-      } catch (error) {
-        console.log("signin error:", error)
-        if (error.name === 'UserNotConfirmedException') {
-          this.unconfirmed = true
-        }
+    //Resend confirmation code if confirming from sign in page
+    onMounted(() => {
+      if (props.resendCode) {
+        Auth.resendSignUp(props.email)
+          .catch(error => {
+            console.log(error)
+          })
       }
-    },
-    async resendConfirmCode() {
-      if (this.resendCode) {
+    })
+
+    // Confirm account function
+    const confirmAcc = async () => {
+      if (confirmForm.value.validated) { //Do not run if the inputs are invalid
+        confirmLoading.value = true //Loading spinner renders
+
+        //If successful
         try {
-          await Auth.resendSignUp(this.email);
-        } catch (err) {
-            console.log('error resending code: ', err);
+          await Auth.confirmSignUp(props.email, code.value) //Sign up through aws
+          confirmed.value = true //Renders the sign in window
+          confirmLoading.value = false //Spinner stops
+
+        } catch (error) {
+          confirmLoading.value = false //Spinner stops
+          if (error.name === "CodeMismatchException") { //If the code is incorrect
+            confirmError.value = "Invalid confirmation code provided, please try again."
+          }
         }
       }
     }
-  },
-  mounted () {
-    this.resendConfirmCode()
+
+    //Handle sign in
+    const { email, password, signInLoading, cognitoSignIn } = signIn()
+
+    //Sign in function
+    const confirmPageSignIn = async () => {
+      try {
+        await cognitoSignIn (props.email, props.password)
+        const user = await Auth.currentAuthenticatedUser()
+        await Auth.updateUserAttributes(user, { //Update the preferred username 
+          preferred_username: p_username.value
+        })
+        router.push({ name: 'CardDecks' })
+      } catch (error) {
+        console.log(error)
+      }
+    }
+      
+    return { 
+      confirmForm, 
+      code,
+      p_username, 
+      confirmLoading,  
+      confirmed, 
+      confirmError, 
+      confirmAcc,
+      confirmPageSignIn, 
+      signInLoading, 
+      validation 
+    }
   }
 }
 </script>
-
-<style>
-
-</style>

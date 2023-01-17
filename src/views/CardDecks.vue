@@ -105,18 +105,13 @@ export default {
       msg: ""
     }
   },
-  mounted() {
-    if (!this.$store.state.currentUser) {
-      this.$router.push({ name: "Signin" })
-    } else {
-      this.username = this.$store.state.currentUser.attributes.preferred_username
-    }
-
+  async mounted() {
+    this.username = this.$store.state.currentUser.attributes.preferred_username
     this.loadDecks() //load all the decks when the page first renders
-
   },
   methods: {
     loadDecks() {
+      console.log("loaded")
       const loadDecks_config = {
         headers: {
           "Authorization": this.$store.state.currentUser.signInUserSession.idToken.jwtToken
