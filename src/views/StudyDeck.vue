@@ -193,55 +193,41 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 
   .flipcard {
     background-color: transparent;
     height: 320px;
     width: 270px;
-    perspective: 1000px;
-    cursor: pointer;
   }
 
   .card-container {
     position: relative;
     width: 100%;
     height: 100%;
-    border-radius: 12px;
     transition: transform 0.6s;
-    transform-style: preserve-3d;
+    transform-style: preserve-3d;;
+  }
+
+  .cardface-back, .cardface-front  {
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    padding: 12px;
+    backface-visibility: hidden;
     background-color: white;
-  }
-
-  .cardface-front {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    padding: 12px;
-    -webkit-backface-visibility: hidden; /* Safari */
-    backface-visibility: hidden;
-  }
-
-  .cardface-back {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    padding: 12px;
-    -webkit-backface-visibility: hidden; /* Safari */
-    backface-visibility: hidden;
-    transform: rotateY(180deg);
-    -webkit-transform: rotateY(180deg);
   }
 
   .isflipped .card-container{
     transform: rotateY(180deg);
-    -webkit-transform: rotateY(180deg);
+  }
+
+  .cardface-back {
+    transform: rotateY(180deg);
   }
 
 </style>

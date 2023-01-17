@@ -107,11 +107,11 @@
                 v-bind:class="{ isflipped: card.isflipped }"
               >
                 <div class="card-container">
-                  <div class="cardface cardface-front">
+                  <div class="cardface-front">
                     <p class="text-h6 text-black">{{ card.question }}</p>
-                    <p class="text-body-1 text-uppercase text-blue-lighten-2 text-center">Question</p>
+                    <p class="text-body-1 text-uppercase text-blue-lighten-2 text-center">Questionss</p>
                   </div>
-                  <div class="cardface cardface-back">
+                  <div class="cardface-back">
                     <p class="text-body-1 font-weight-medium text-black">{{ card.answer }}</p>
                     <p class="text-body-1 text-uppercase text-green-lighten-2 text-center">Answer</p>
                   </div>
@@ -192,6 +192,9 @@ export default {
       editCardAnswer: "",
       cards: [],
       deckInfo: {},
+      test1: 'test1',
+      test2: 'test2'
+
     }
   },
   methods: {
@@ -271,7 +274,6 @@ export default {
   }
 }
 </script>
-
 <style>
   .createcard > .v-overlay__content  {
     width: 100%;
@@ -288,54 +290,42 @@ export default {
   .flashgen > .v-overlay__content  {
     width: 100%;
   }
+</style>
+<style scoped>
 
-  .flipcard {
+.flipcard {
     background-color: transparent;
-    height: 250px;
-    width: 200px;
-    perspective: 1000px;
-    -webkit-perspective: 1000px;
-    cursor: pointer;
+    height: 320px;
+    width: 270px;
   }
 
   .card-container {
     position: relative;
     width: 100%;
     height: 100%;
-    border-radius: 12px;
     transition: transform 0.6s;
-    -webkit-transition: transform 0.6s;
-    transform-style: preserve-3d;
-    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;;
+  }
+
+  .cardface-back, .cardface-front  {
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    padding: 12px;
+    backface-visibility: hidden;
     background-color: white;
-  }
-
-  .cardface-front {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    padding: 12px;
-    -webkit-backface-visibility: hidden; /* Safari */
-    backface-visibility: hidden;
-  }
-
-  .cardface-back {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    padding: 12px;
-    -webkit-backface-visibility: hidden; /* Safari */
-    backface-visibility: hidden;
   }
 
   .isflipped .card-container{
     transform: rotateY(180deg);
-    -webkit-transform: rotateY(180deg);
   }
+
+  .cardface-back {
+    transform: rotateY(180deg);
+  }
+
 </style>
