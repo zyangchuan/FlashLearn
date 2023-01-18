@@ -37,7 +37,7 @@ export const store = createStore ({
         })
         .catch (error => {
           console.log(error)
-        }) 
+        })
     },
     async loadCards (context, deckid) {
       const loadCards_config = {

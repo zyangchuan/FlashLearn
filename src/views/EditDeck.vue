@@ -192,9 +192,6 @@ export default {
       editCardAnswer: "",
       cards: [],
       deckInfo: {},
-      test1: 'test1',
-      test2: 'test2'
-
     }
   },
   methods: {
@@ -274,26 +271,9 @@ export default {
   }
 }
 </script>
-<style>
-  .createcard > .v-overlay__content  {
-    width: 100%;
-  }
 
-  .editdeckdetails > .v-overlay__content  {
-    width: 100%;
-  }
-
-  .editcard > .v-overlay__content  {
-    width: 100%;
-  }
-
-  .flashgen > .v-overlay__content  {
-    width: 100%;
-  }
-</style>
 <style scoped>
-
-.flipcard {
+  .flipcard {
     background-color: transparent;
     height: 320px;
     width: 270px;
@@ -328,5 +308,4 @@ export default {
   .cardface-back {
     transform: rotateY(180deg);
   }
-
 </style>

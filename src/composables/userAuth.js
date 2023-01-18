@@ -11,10 +11,10 @@ export const signIn = () => {
   const password = ref("")
   const signInLoading = ref(false) //Loading spinner for the sign in button
   
-  const cognitoSignIn = async (email, password) => {
+  const cognitoSignIn = async () => {
     try {
       signInLoading.value = true
-      await Auth.signIn(email, password) //Sign in via aws cognito
+      await Auth.signIn(email.value, password.value) //Sign in via aws cognito
       store.dispatch("setAuthentication") //Set the current user in the global state
     
     } catch (error) {
@@ -35,14 +35,14 @@ export const signUp = () => {
   const signUpLoading = ref(false) //Loading spinner for sign up button
 
   //Sign up function
-  const cognitoSignUp = async (email, password) => {
+  const cognitoSignUp = async () => {
     try {
       signUpLoading.value = true
       await Auth.signUp({ //Sign up via aws cognito
-        username: email,
-        password: password,
+        username: email.value,
+        password: password.value,
         attributes: {
-          email: email
+          email: email.value
         }
       })
 

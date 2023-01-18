@@ -8,7 +8,7 @@
       </v-col>
 
       <v-col cols="12" v-if="!unconfirmed">
-        <AuthForm ref="signUpForm">
+        <Form ref="signUpForm">
           <template v-slot:headers>
             <p 
               class="text-h5 text-sm-h4 font-weight-medium text-center">
@@ -61,24 +61,26 @@
           </template>
 
           <template v-slot:buttons>
-            <v-btn 
-              variant="flat" 
-              size="large" 
-              :loading="signUpLoading" 
-              v-on:click="signUpForm.form.validate(), signUpPageSignUp()"
-            >
-              Sign up
-            </v-btn>
-            <p class="my-2">
-              Already a user? 
-              <span>
-                <router-link class="link" v-bind:to="{ name: 'Signin' }">
-                  Sign in
-                </router-link>
-              </span>
-            </p>
+            <div class="d-flex flex-column align-center">
+              <v-btn 
+                variant="flat" 
+                size="large" 
+                :loading="signUpLoading" 
+                v-on:click="signUpForm.form.validate(), signUpPageSignUp()"
+              >
+                Sign up
+              </v-btn>
+              <p class="my-2">
+                Already a user? 
+                <span>
+                  <router-link class="link" v-bind:to="{ name: 'Signin' }">
+                    Sign in
+                  </router-link>
+                </span>
+              </p>
+            </div>
           </template>
-        </AuthForm>
+        </Form>
       </v-col>
       
       <v-col cols="12" v-if="unconfirmed">
@@ -94,7 +96,7 @@
 
 <script>
 import ConfirmSignup from "../components/ConfirmSignup.vue"
-import AuthForm from "../components/AuthForm"
+import Form from "../components/Form.vue"
 import { signUp } from "../composables/userAuth"
 import validation from "../composables/validation"
 import { ref } from '@vue/reactivity'
@@ -103,7 +105,7 @@ import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 
 export default {
-	components: { ConfirmSignup, AuthForm },
+	components: { ConfirmSignup, Form },
 	setup() {
     const router = useRouter()
     const store = useStore()
@@ -115,7 +117,7 @@ export default {
 
     const signUpPageSignUp = () => {
       if (signUpForm.value.validated) {
-        cognitoSignUp (email.value, password.value)
+        cognitoSignUp ()
           .then(() => {
             unconfirmed.value = true
           })

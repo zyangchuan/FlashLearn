@@ -61,4 +61,12 @@ export default {
   .link:hover {
     color: lightblue;
   }
+  .v-overlay__content {
+    width: 100%;
+    padding: 15px;
+  }
+  .v-progress-circular {
+    display: block;
+    margin: auto;
+  }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <AuthForm ref="confirmForm" v-if="!confirmed">
+  <Form ref="confirmForm" v-if="!confirmed">
     <template v-slot:headers>
       <p 
         class="text-h5 text-sm-h4
@@ -42,15 +42,17 @@
     </template>
 
     <template v-slot:buttons>
-      <v-btn 
-        variant="flat" 
-        :loading="confirmLoading"
-        v-on:click="confirmForm.form.validate(), confirmAcc()"
-      >
-        Continue
-      </v-btn>
+      <div class="d-flex flex-end">
+        <v-btn 
+          variant="flat" 
+          :loading="confirmLoading"
+          v-on:click="confirmForm.form.validate(), confirmAcc()"
+        >
+          Continue
+        </v-btn>
+      </div>
     </template>
-  </AuthForm>
+  </Form>
 
   <v-card class="d-flex flex-column pa-5 justify-center align-center mx-auto" max-width="500" height="250" v-if="confirmed">
     <p 
@@ -76,14 +78,14 @@
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { Auth } from "aws-amplify"
-import AuthForm from "../components/AuthForm.vue"
+import Form from "../components/Form.vue"
 import { signIn } from "../composables/userAuth"
 import validation from "../composables/validation"
 
 
 export default {
   props: ['email', 'password', 'resendCode'],
-  components: { AuthForm },
+  components: { Form },
   setup(props) {
     const router = useRouter() //Router object
 
@@ -129,11 +131,13 @@ export default {
 
     //Handle sign in
     const { email, password, signInLoading, cognitoSignIn } = signIn()
+    email.value = props.email //Pass in email and password from props
+    password.value = props.password
 
     //Sign in function
     const confirmPageSignIn = async () => {
       try {
-        await cognitoSignIn (props.email, props.password)
+        await cognitoSignIn ()
         const user = await Auth.currentAuthenticatedUser()
         await Auth.updateUserAttributes(user, { //Update the preferred username 
           preferred_username: p_username.value
