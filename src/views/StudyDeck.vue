@@ -19,21 +19,9 @@
       
       <v-row class="d-flex flex-column">
         <v-col class="d-flex flex-column align-center justify-center fill-height">
-          <div
-            class="ma-6 flipcard"
-            v-on:click="isflipped = !isflipped"
-            v-bind:class="{ isflipped: isflipped }"
-          >
-            <div class="card-container">
-              <div class="cardface cardface-front">
-                <p class="text-h6 text-black font-weight-medium">{{ currentCard.question }}</p>
-                <p class="text-h6 text-uppercase text-blue-lighten-2 text-center">Question</p>
-              </div>
-              <div class="cardface cardface-back">
-                <p class="text-body-1 font-weight-medium text-black">{{ currentCard.answer }}</p>
-                <p class="text-h6 text-uppercase text-green-lighten-2 text-center">Answer</p>
-              </div>
-            </div>
+          <div>
+            <!-- heres the component -->
+            <FlashCard  :card="currentCard"/>
           </div>
           <p class="text-h6">{{ noOfCardsStudied }} / {{ totalCardsLength }} <span class="mx-2">Cards Studied</span></p>
         </v-col>
@@ -61,6 +49,7 @@
         </v-col>
       </v-row>
     </div>
+
     <v-overlay v-model="completeOverlay" scrim="black" class="justify-center align-center">
       <div style="max-width: 500px;">
         <v-card
@@ -78,14 +67,16 @@
 
 <script>
 import axios from 'axios'
+import FlashCard from '../components/FlashCard.vue'
 
 export default {
   props: ['deckname'],
+  components: { FlashCard },
   data () {
     return {
       loadingOverlay: false,
       completeOverlay: false,
-      isflipped: false,
+      isflipped: false, //control inside FlashCard component
       nFLoading: false,
       nSLoading: false,
       fLoading: false,
