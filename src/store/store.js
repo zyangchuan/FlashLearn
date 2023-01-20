@@ -5,11 +5,22 @@ import { cardStack } from '../functions/cardstack.js'
 import axios from 'axios'
 
 const vuexLocal = new VuexPersistence({
-  storage: window.localStorage
+  storage: window.localStorage,
+  reducer: state => ({
+    currentUser: state.currentUser
+  })
+})
+
+const vuexSession = new VuexPersistence({
+  storage: window.sessionStorage,
+  reducer: state => ({
+    currentDeckID: state.currentDeckID,
+    studyCards: state.studyCards
+  })
 })
 
 export const store = createStore ({
-  plugins: [vuexLocal.plugin],
+  plugins: [vuexLocal.plugin, vuexSession.plugin],
   state: {
     currentUser: null,
     currentDeckID: "",

@@ -2,51 +2,161 @@
   <v-container>
     <div class="d-flex justify-space-between align-center">
       <h1 class="text-h5 text-sm-h4 font-weight-bold my-10">Edit Card Deck</h1>
-      <v-btn variant="outlined" prepend-icon="mdi-arrow-left" class="text-capitalize" v-bind:to="{ name: 'CardDecks' }">Back</v-btn>
+      <v-btn 
+        variant="outlined" 
+        prepend-icon="mdi-arrow-left" 
+        class="text-capitalize" 
+        v-bind:to="{ name: 'CardDecks' }"
+      >
+        Back
+      </v-btn>
     </div>
 
-    <v-overlay v-model="deleteDeckOverlay" scrim="black" class="justify-center align-center">
-      <div style="max-width: 500px;">
-        <v-card
-          class="pa-6 mx-5">
-          <p class="text-h6 font-weight-light text-center">Are you sure you want to delete this card deck?</p>
-          <div class="d-flex justify-end mt-6">
-            <v-btn variant="flat" class="text-red" v-on:click="deleteDeck">Yes, Delete</v-btn>
-            <v-btn variant="flat" v-on:click="deleteDeckOverlay = false">No, Keep it</v-btn>
-          </div>
-        </v-card>
-      </div>
-    </v-overlay>
+    <PopUpPrompt ref="confirmDeleteDeckPrompt">
+      <template v-slot:message>
+        Are you sure you want to delete this card deck?
+      </template>
+      <template v-slot:actions>
+        <v-btn
+          class="text-capitalize mx-2"
+          color="red"
+          variant="text"
+          v-on:click="editDeckPageDeleteDeck"
+        >
+          Yes, delete
+        </v-btn>
+        <v-btn
+          class="text-capitalize mx-2"
+          color="white"
+          variant="text"
+          v-on:click="confirmDeleteDeckPrompt.show = false"
+        >
+          Cancel
+        </v-btn>
+      </template>
+    </PopUpPrompt>
 
-    <v-overlay v-model="editDeckOverlay" scrim="black" class="justify-center align-center editdeckdetails">
-      <EditDeckDetails 
-        v-on:closeOverlay="editDeckOverlay = false" 
-        v-on:deckEdited="loadNewDeck"
-        v-bind:deckname="deckname"
-        v-bind:descp="deck_descp"/>
+    <v-overlay v-model="editDeckOverlay" scrim="black" class="justify-center align-center">
+      <Form ref="editDeckForm">
+        <template v-slot:headers>
+          <p class="text-h6">Edit deck</p>
+        </template>
+
+        <template v-slot:fields>
+          <p class="caption font-weight-light my-2">
+            Deck Name
+          </p>
+
+          <v-text-field 
+            label="Deck name"
+            v-model="editDeckName"
+            counter="50"
+            v-bind:rules="[validation.required, validation.maxLength(editDeckName, 50)]"
+          ></v-text-field>
+
+          <p class="caption font-weight-light my-2">
+            Deck Description
+          </p>
+
+          <v-textarea 
+            label="Deck description"
+            v-model="editDeckDesc"
+            counter="150"
+            v-bind:rules="[validation.maxLength(editDeckName, 150)]"
+          ></v-textarea>
+        </template>
+
+        <template v-slot:buttons>
+          <div class="d-flex flex-end">
+            <v-btn 
+              variant="flat"
+              v-on:click="editDeckForm.form.validate(), editDeckPageUpdateDeck()"
+            >
+              Apply
+            </v-btn>
+            <v-btn 
+              variant="flat"
+              v-on:click="editDeckOverlay = false"
+            >
+              Cancel
+            </v-btn>
+          </div>
+        </template>
+      </Form>
     </v-overlay>
 
     <v-overlay v-model="editCardOverlay" scrim="black" class="justify-center align-center editcard">
-      <EditCard 
-        v-on:closeOverlay="editCardOverlay = false" 
-        v-on:cardUpdated="loadDeck"
-        v-bind:cardid="editCardID"
-        v-bind:question="editCardQuestion"
-        v-bind:answer="editCardAnswer"/>
+      <Form ref="editCardForm">
+        <template v-slot:headers>
+          <p class="text-h6">Edit card</p>
+        </template>
+
+        <template v-slot:fields>
+          <p class="caption font-weight-light my-2">
+            Question
+          </p>
+
+          <v-text-field 
+            label="Question"
+            v-model="editCardQuestion"
+            counter="60"
+            v-bind:rules="[validation.required, validation.maxLength(editCardQuestion, 60)]"
+          ></v-text-field>
+
+          <p class="caption font-weight-light my-2">
+            Answer
+          </p>
+
+          <v-textarea 
+            label="Answer"
+            v-model="editCardAnswer"
+            counter="150"
+            v-bind:rules="[validation.maxLength(editCardQuestion, 150)]"
+          ></v-textarea>
+        </template>
+
+        <template v-slot:buttons>
+          <div class="d-flex flex-end">
+            <v-btn 
+              variant="flat"
+              v-on:click="editCardForm.form.validate(), editDeckPageUpdateCard()"
+            >
+              Apply
+            </v-btn>
+            <v-btn 
+              variant="flat"
+              v-on:click="editCardOverlay = false"
+            >
+              Cancel
+            </v-btn>
+          </div>
+        </template>
+      </Form>
     </v-overlay>
 
-    <v-overlay v-model="deleteCardOverlay" scrim="black" class="justify-center align-center">
-      <div style="max-width: 500px;">
-        <v-card
-          class="pa-6 mx-5">
-          <p class="text-h6 font-weight-light text-center">Are you sure you want to delete this card?</p>
-          <div class="d-flex justify-end mt-6">
-            <v-btn variant="flat" class="text-red" v-on:click="deleteCard(deleteCardID)">Yes, Delete</v-btn>
-            <v-btn variant="flat" v-on:click="deleteCardOverlay = false">No, Keep it</v-btn>
-          </div>
-        </v-card>
-      </div>
-    </v-overlay>
+    <PopUpPrompt ref="confirmDeleteCardPrompt">
+      <template v-slot:message>
+        Are you sure you want to delete this card?
+      </template>
+      <template v-slot:actions>
+        <v-btn
+          class="text-capitalize mx-2"
+          color="red"
+          variant="text"
+          v-on:click="editDeckPageDeleteCard()"
+        >
+          Yes, delete
+        </v-btn>
+        <v-btn
+          class="text-capitalize mx-2"
+          color="white"
+          variant="text"
+          v-on:click="confirmDeleteCardPrompt.show = false"
+        >
+          Cancel
+        </v-btn>
+      </template>
+    </PopUpPrompt>
 
     <v-overlay v-model="loadingOverlay" scrim="black" class="align-center justify-center">
       <v-progress-circular
@@ -60,8 +170,8 @@
       <v-card class="pa-6 pa-sm-8 mb-n2 fill-width rounded-lg" color="rgb(50, 50, 50)" elevation="10">
         <div class="d-flex flex-column flex-sm-row justify-space-between">
           <div class="w-sm-75">
-            <p class="text-h5 text-sm-h4 font-weight-medium">{{ deckname }}</p>
-            <p class="text-body-1 text-sm-h6 text-grey my-4">{{ deck_descp }}</p>
+            <p class="text-h5 text-sm-h4 font-weight-medium">{{ deckName }}</p>
+            <p class="text-body-1 text-sm-h6 text-grey my-4">{{ deckDesc }}</p>
           </div>
 
           <div class="d-flex flex-sm-column  justify-center">
@@ -71,7 +181,7 @@
               color="red" 
               width="130"
               prepend-icon="mdi-trash-can-outline"
-              v-on:click="deleteDeckOverlay = true">
+              v-on:click="confirmDeleteDeckPrompt.show = true">
               Delete Deck
             </v-btn>
             <v-btn 
@@ -92,56 +202,126 @@
       <v-sheet
         class="mx-auto mt-10"
       >
+        <v-row justify="center">
+          <v-col cols="8">
+            <v-text-field 
+              label="Search Card" 
+              append-icon="mdi-magnify"
+              density="comfortable"
+              single-line
+              v-model="search"
+            ></v-text-field>
+          </v-col>
+        </v-row>
+
         <p class="text-body-1 text-sm-h6 text-center text-grey">Click/Tap the card to reveal the answer</p>
-        <v-slide-group
-          class="pb-4 pa-4"
-        >
-          <v-slide-group-item
-            v-for="card in cards"
+        
+        <div class="flashcards-group">
+          <div
+            v-for="card in matchingCards"
             :key="card.cardid"
           >
-            <div class="d-flex flex-column align-center">
-              <div
-                class="ma-4 flipcard"
-                v-on:click="card.isflipped = !card.isflipped"
-                v-bind:class="{ isflipped: card.isflipped }"
-              >
-                <div class="card-container">
-                  <div class="cardface-front">
-                    <p class="text-h6 text-black">{{ card.question }}</p>
-                    <p class="text-body-1 text-uppercase text-blue-lighten-2 text-center">Questions</p>
-                  </div>
-                  <div class="cardface-back">
-                    <p class="text-body-1 font-weight-medium text-black">{{ card.answer }}</p>
-                    <p class="text-body-1 text-uppercase text-green-lighten-2 text-center">Answer</p>
-                  </div>
-                </div>
-              </div>
-
+            <div class="d-flex flex-column align-center mb-5">
+              <FlashCard :card="card" size="small"/>
               <div>
-                <v-chip class="mx-2 text-red" v-on:click="goDeleteCard(card.cardid)" link>Delete</v-chip>
-                <v-chip class="mx-2 text-blue" v-on:click="goEditCard(card.cardid, card.question, card.answer)" link>Edit</v-chip>
+                <v-chip class="mx-2 text-red" v-on:click="openDeleteCardPrompt(card.cardid)" link>Delete</v-chip>
+                <v-chip class="mx-2 text-blue" v-on:click="openEditCardOverlay(card.cardid, card.question, card.answer)" link>Edit</v-chip>
               </div>
             </div>
-              
-          </v-slide-group-item>
-        </v-slide-group>
-
-        <v-divider class="my-4"></v-divider>
+          </div>
+        </div>
 
         <v-overlay v-model="createCardOverlay" scrim="black" class="justify-center align-center createcard">
-          <CreateCard 
-            v-on:closeOverlay="createCardOverlay = false" 
-            v-on:cardCreated="loadDeck"/>
+          <Form ref="createCardForm">
+            <template v-slot:headers>
+              <p class="text-h6">Create card</p>
+            </template>
+
+            <template v-slot:fields>
+              <p class="caption font-weight-light my-2">
+                Question
+              </p>
+
+              <v-text-field 
+                label="Question"
+                v-model="cardQuestion"
+                counter="60"
+                v-bind:rules="[validation.required, validation.maxLength(cardQuestion, 60)]"
+              ></v-text-field>
+
+              <p class="caption font-weight-light my-2">
+                Answer
+              </p>
+
+              <v-textarea 
+                label="Answer"
+                v-model="cardAnswer"
+                counter="150"
+                v-bind:rules="[validation.required, validation.maxLength(cardQuestion, 150)]"
+              ></v-textarea>
+            </template>
+
+            <template v-slot:buttons>
+              <div class="d-flex flex-end">
+                <v-btn 
+                  variant="flat"
+                  v-on:click="createCardForm.form.validate(), editDeckPageCreateCard()"
+                >
+                  Create
+                </v-btn>
+                <v-btn 
+                  variant="flat"
+                  v-on:click="createCardOverlay = false"
+                >
+                  Cancel
+                </v-btn>
+              </div>
+            </template>
+          </Form>
         </v-overlay>
 
         <v-overlay v-model="flashGenOverlay" scrim="black" class="justify-center align-center flashgen">
-          <FlashGen 
-            v-on:closeOverlay="flashGenOverlay = false" 
-            v-on:flashGenDone="loadDeck"/>
+          <Form ref="flashGenForm">
+            <template v-slot:headers>
+              <p class="text-h5 text-yellow-lighten-2 mb-8">FlashGen</p>
+              <p class="text-h6 font-weight-light mb-8">Paste a paragraph of text (e.g study notes, a paragraph from an article) into the box below to generate flash cards immediately.</p>
+            </template>
+
+            <template v-slot:fields>
+              <p class="caption font-weight-light my-2">
+                Paste your text here
+              </p>
+
+              <v-textarea 
+                label="Text"
+                v-model="flashGenText"
+                counter="120"
+                v-bind:rules="[validation.required, validation.minLength(flashGenText, 120)]"
+              ></v-textarea>
+            </template>
+
+            <template v-slot:buttons>
+              <div class="d-flex flex-end">
+                <v-btn 
+                  variant="flat"
+                  class="text-yellow-lighten-2"
+                  :loading="flashGenSpinner"
+                  v-on:click="flashGenForm.form.validate(), editDeckPageFlashGen()"
+                >
+                  Generate Cards
+                </v-btn>
+                <v-btn 
+                  variant="flat"
+                  v-on:click="flashGenOverlay = false"
+                >
+                  Cancel
+                </v-btn>
+              </div>
+            </template>
+          </Form>
         </v-overlay>
 
-        <div class="my-5 d-flex flex-start align-center justify-center">
+        <div class="my-6 d-flex flex-start align-center justify-center">
           <v-btn 
             variant="outlined" 
             prepend-icon="mdi-plus" 
@@ -161,151 +341,227 @@
         </div>
       </v-sheet>
     </v-card>
-    
-    
   </v-container>
 </template>
 
 <script>
-import axios from 'axios'
-import EditDeckDetails from "../components/EditDeckDetails.vue"
-import EditCard from "../components/EditCard.vue"
-import CreateCard from "../components/CreateCard.vue"
-import FlashGen from "../components/FlashGen.vue"
+import { ref } from '@vue/reactivity'
+import { useRouter } from 'vue-router'
+import { computed, onMounted } from '@vue/runtime-core'
+import Form from "../components/Form.vue"
+import FlashCard from "../components/FlashCard.vue"
+import PopUpPrompt from "../components/PopUpPrompt.vue"
+import deckHandler from "../composables/deckHandler"
+import cardHandler from "../composables/cardHandler"
+import flashGen from "../composables/flashGen"
+import validation from "../composables/validation"
 
 export default {
   props: ['deckname'],
-  components: { EditDeckDetails, EditCard, CreateCard, FlashGen },
-  data() {
-    return {
-      deck_descp: "",
-      deleteDeckOverlay: false,
-      deleteCardOverlay: false,
-      editDeckOverlay: false,
-      editCardOverlay: false,
-      createCardOverlay: false,
-      flashGenOverlay: false,
-      loadingOverlay: true,
-      deleteCardID: "",
-      editCardID: "",
-      editCardQuestion: "",
-      editCardAnswer: "",
-      cards: [],
-      deckInfo: {},
-    }
-  },
-  methods: {
-    loadNewDeck (newname) {
-      this.$router.push({ name: "EditDeck", params: { deckname: newname } })
-    },
-    loadDeck () {
-      const loadDeck_config = {
-        headers: {
-            "Authorization": this.$store.state.currentUser.signInUserSession.idToken.jwtToken
-          },
-          params: {
-            "deckid": this.$store.state.currentDeckID
+  components: { PopUpPrompt, Form, FlashCard },
+  setup() {
+      const router = useRouter()
+
+      //Load deck
+      const loadingOverlay = ref(false)
+      const { deckName, deckDesc, cards, loadDeck, deleteDeck, editDeckName, editDeckDesc, updateDeck } = deckHandler()
+      
+      //Load deck on mounted
+      onMounted(() => {
+        loadingOverlay.value = true
+        loadDeck()
+          .then(() => {
+            //Copy the values so that they do not change when editing deck
+            editDeckName.value = deckName.value 
+            editDeckDesc.value = deckDesc.value
+            loadingOverlay.value = false
+          })
+          .catch(error => {
+            console.log(error)
+          })
+      })
+
+      //Search card
+      const search = ref("")
+      const matchingCards = computed(() => {
+        return cards.value.filter(card => card.question.includes(search.value))
+      })
+
+      //Delete deck
+      const confirmDeleteDeckPrompt = ref()
+      const editDeckPageDeleteDeck = () => {
+        deleteDeck()
+          .then(() => {
+            router.push({ name: 'CardDecks' })
+          })
+          .catch (error => {
+            console.log(error)
+          })
+      }
+
+      //Update deck
+      const editDeckOverlay = ref(false)
+      const editDeckForm = ref()
+
+      const editDeckPageUpdateDeck = async () => {
+        if (editDeckForm.value.validated) {
+          editDeckOverlay.value = false
+          loadingOverlay.value = true
+          try {
+            await updateDeck()
+            await loadDeck()
+            loadingOverlay.value = false
+          } catch (error) {
+            console.log(error)
           }
-      }
-
-      axios.get('https://f4ng7av2s6.execute-api.ap-southeast-1.amazonaws.com/flashlearn-test/card-decks/edit-deck', loadDeck_config)
-        .then(response => {
-          this.deck_descp = response.data.descp
-          this.cards = response.data.cards
-          this.loadingOverlay = false
-        })
-        .catch(error => {
-          console.log(error)
-        })
-    },
-    deleteDeck() {
-      const deleteDeck_config = {
-        headers: {
-          "Authorization": this.$store.state.currentUser.signInUserSession.idToken.jwtToken
-        },
-        params: {
-          "userid": this.$store.state.currentUser.attributes.sub,
-          "deckid": this.$store.state.currentDeckID
         }
       }
-      axios.delete('https://f4ng7av2s6.execute-api.ap-southeast-1.amazonaws.com/flashlearn-test/card-decks', deleteDeck_config)
-        .catch(error => {
-          console.log(error)
-        })
 
-      this.deleteDeckOverlay = false
-      this.$router.push({ name: 'CardDecks' })
-    },
-    goDeleteCard (cardid) {
-      this.deleteCardOverlay = true
-      this.deleteCardID = cardid
-    },
-    goEditCard (cardid, question, answer) {
-      this.editCardOverlay = true
-      this.editCardID = cardid
-      this.editCardQuestion = question
-      this.editCardAnswer = answer
-    },
-    deleteCard (cardid) {
-      const deleteCard_config = {
-        headers: {
-          "Authorization": this.$store.state.currentUser.signInUserSession.idToken.jwtToken
-        },
-        params: {
-          "deckid": this.$store.state.currentDeckID,
-          "cardid": cardid
+      //Delete card
+      const confirmDeleteCardPrompt = ref()
+      const { cardQuestion, cardAnswer, deleteCard, updateCard, createCard } = cardHandler()
+      const deleteCardID = ref("")
+
+      const openDeleteCardPrompt = (cardID) => {
+        deleteCardID.value = cardID
+        confirmDeleteCardPrompt.value.show = true
+      }
+      
+      const editDeckPageDeleteCard = async () => {
+        try {
+          await deleteCard(deleteCardID.value)
+          confirmDeleteCardPrompt.value.show = false
+          await loadDeck()
+        } catch (error) {
+          console.log(error)
         }
       }
-      axios.delete('https://f4ng7av2s6.execute-api.ap-southeast-1.amazonaws.com/flashlearn-test/card-decks/edit-deck', deleteCard_config)
-        .then(() => {
-          this.deleteCardOverlay = false
-          this.loadDeck()
-        })
-        .catch(error => {
-          console.log(error)
-        })
+
+      //Edit card
+      const editCardForm = ref()
+      const editCardID = ref("")
+      const editCardOverlay = ref(false)
+      const editCardQuestion = ref("")
+      const editCardAnswer = ref("")
+
+      const openEditCardOverlay = (cardID, cardQuestion, cardAnswer) => {
+        editCardOverlay.value = true
+        editCardID.value = cardID
+        editCardQuestion.value = cardQuestion
+        editCardAnswer.value = cardAnswer
+      }
+
+      const editDeckPageUpdateCard = async () => {
+        if (editCardForm.value.validated) {
+          try {
+            await updateCard(editCardID.value, editCardQuestion.value, editCardAnswer.value)
+            editCardOverlay.value = false
+            await loadDeck()
+          } catch (error) {
+            console.log(error)
+          }
+        }
+      }
+
+      //Create card
+      const createCardForm = ref()
+      const createCardOverlay = ref(false)
+
+      const editDeckPageCreateCard = async () => {
+        if (createCardForm.value.validated) {
+          try {
+            await createCard()
+            createCardOverlay.value = false
+            await loadDeck()
+          } catch (error) {
+            console.log(error)
+          }
+        }
+      }
+
+      //FlashGen
+      const flashGenForm = ref()
+      const flashGenOverlay = ref(false)
+      const flashGenSpinner = ref(false)
+      const { flashGenText, generateCards } = flashGen()
+
+      const editDeckPageFlashGen = async () => {
+        if (flashGenForm.value.validated) {
+          try {
+            flashGenSpinner.value = true
+            await generateCards()
+            flashGenSpinner.value = false
+            flashGenOverlay.value = false
+            await loadDeck()
+          } catch (error) {
+            console.log(error)
+          }
+        }
+      }
+
+      return { 
+        deckName, 
+        deckDesc, 
+        search,
+        matchingCards, 
+        loadingOverlay,
+        confirmDeleteDeckPrompt,
+        editDeckPageDeleteDeck,
+        editDeckOverlay,
+        editDeckForm,
+        editDeckName,
+        editDeckDesc,
+        editDeckPageUpdateDeck,
+        confirmDeleteCardPrompt,
+        openDeleteCardPrompt,
+        editDeckPageDeleteCard,
+        editCardForm,
+        editCardOverlay,
+        editCardQuestion,
+        editCardAnswer,
+        openEditCardOverlay,
+        editDeckPageUpdateCard,
+        createCardForm,
+        createCardOverlay,
+        cardQuestion,
+        cardAnswer,
+        editDeckPageCreateCard,
+        flashGenForm,
+        flashGenOverlay,
+        flashGenSpinner,
+        flashGenText,
+        editDeckPageFlashGen,
+        validation
+      }
     }
-  },
-  created() {
-    this.loadDeck()
-  }
 }
 </script>
 
 <style scoped>
-  .flipcard {
-    background-color: transparent;
-    height: 320px;
-    width: 270px;
-    perspective: 1000px;
-  }
-
-  .card-container {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    transition: transform 0.6s;
-    transform-style: preserve-3d;;
-  }
-
-  .cardface-back, .cardface-front  {
-    border-radius: 12px;
+  .flashcards-group {
     display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    padding: 12px;
-    backface-visibility: hidden;
-    background-color: white;
+    overflow-x: scroll;
+    padding: 0px 10px;
   }
 
-  .isflipped .card-container{
-    transform: rotateY(180deg);
+  /* width */
+  ::-webkit-scrollbar {
+    height: 12px;
   }
 
-  .cardface-back {
-    transform: rotateY(180deg);
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #212121;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #464646;
+    border-radius: 10px;
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #515151;
   }
 </style>

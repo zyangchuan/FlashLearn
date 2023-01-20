@@ -74,7 +74,8 @@ export default {
       await Auth.updateUserAttributes(user, {
         preferred_username: this.edit_username
       })
-      this.$store.commit("setCurrentUser", await Auth.currentAuthenticatedUser())
+      const new_user = await Auth.currentAuthenticatedUser()
+      this.$store.commit("setCurrentUser", new_user)
       this.editingUsername = false
       this.display_username = this.edit_username
     }

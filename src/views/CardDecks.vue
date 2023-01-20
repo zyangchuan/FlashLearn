@@ -47,7 +47,8 @@
           <v-text-field 
             label="Deck name"
             v-model="deckName"
-            v-bind:rules="[validation.required]"
+            counter="50"
+            v-bind:rules="[validation.required, validation.maxLength(deckName, 50)]"
           ></v-text-field>
 
           <p class="caption font-weight-light my-2">
@@ -57,6 +58,8 @@
           <v-textarea 
             label="Deck description"
             v-model="deckDesc"
+            counter="150"
+            v-bind:rules="[validation.maxLength(deckDesc, 150)]"
           ></v-textarea>
         </template>
 
@@ -140,10 +143,10 @@
             v-if="deck.descReveal" 
             class="transition-fast-in-fast-out v-card--reveal"
           >
-            <v-card-text class="ma-3">
+            <v-card-text class="mx-3">
               <p class="text-body-1">{{ deck.descp }}</p>
             </v-card-text>
-            <v-card-actions class="ma-3">
+            <v-card-actions class="mx-3">
               <v-btn v-on:click="deck.descReveal = false">
                 Close
               </v-btn>
@@ -193,16 +196,19 @@ export default {
     const createDeckOverlay = ref(false)
     const { deckName, deckDesc, createDeck } = deckCreator()
 
-    const cardDecksPageCreateDeck = () => {
+    const cardDecksPageCreateDeck = async () => {
       if (createDeckForm.value.validated) {
         createDeckOverlay.value = false
-        createDeck()
-          .then(() => {
-            loadDecks()
-          })
-          .catch(error => {
-            console.log(error)
-          })
+        loadingDecksOverlay.value = true
+
+        try {
+          await createDeck()
+          loadingDecksOverlay.value = false
+          deckName.value = ""
+          deckDesc.value = ""
+        } catch (error) {
+          console.log(error)
+        }
       }
     }
 

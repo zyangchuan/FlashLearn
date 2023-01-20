@@ -19,22 +19,7 @@
       
       <v-row class="d-flex flex-column">
         <v-col class="d-flex flex-column align-center justify-center fill-height">
-          <div
-            class="ma-6 flipcard"
-            v-on:click="isflipped = !isflipped"
-            v-bind:class="{ isflipped: isflipped }"
-          >
-            <div class="card-container">
-              <div class="cardface cardface-front">
-                <p class="text-h6 text-black font-weight-medium">{{ currentCard.question }}</p>
-                <p class="text-h6 text-uppercase text-blue-lighten-2 text-center">Question</p>
-              </div>
-              <div class="cardface cardface-back">
-                <p class="text-body-1 font-weight-medium text-black">{{ currentCard.answer }}</p>
-                <p class="text-h6 text-uppercase text-green-lighten-2 text-center">Answer</p>
-              </div>
-            </div>
-          </div>
+          <FlashCard  :card="currentCard" size="large"/>
           <p class="text-h6">{{ noOfCardsStudied }} / {{ totalCardsLength }} <span class="mx-2">Cards Studied</span></p>
         </v-col>
         <v-col class="d-flex flex-column justify-center align-center">
@@ -61,6 +46,7 @@
         </v-col>
       </v-row>
     </div>
+
     <v-overlay v-model="completeOverlay" scrim="black" class="justify-center align-center">
       <div style="max-width: 500px;">
         <v-card
@@ -78,14 +64,14 @@
 
 <script>
 import axios from 'axios'
-
+import FlashCard from '../components/FlashCard.vue'
 export default {
   props: ['deckname'],
+  components: { FlashCard },
   data () {
     return {
       loadingOverlay: false,
       completeOverlay: false,
-      isflipped: false,
       nFLoading: false,
       nSLoading: false,
       fLoading: false,
@@ -189,46 +175,6 @@ export default {
       this.$router.push({ name: 'CardDecks' })
     }
   }
-
 }
 </script>
-
-<style scoped>
-
-  .flipcard {
-    background-color: transparent;
-    height: 320px;
-    width: 270px;
-    perspective: 1000px;
-  }
-
-  .card-container {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    transition: transform 0.6s;
-    transform-style: preserve-3d;;
-  }
-
-  .cardface-back, .cardface-front  {
-    border-radius: 12px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    padding: 12px;
-    backface-visibility: hidden;
-    background-color: white;
-  }
-
-  .isflipped .card-container{
-    transform: rotateY(180deg);
-  }
-
-  .cardface-back {
-    transform: rotateY(180deg);
-  }
-
-</style>
+  

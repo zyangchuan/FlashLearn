@@ -22,6 +22,14 @@ const minLength = (value, minLength) => {
   }
 }
 
+const maxLength = (value, maxLength) => {
+  if (value.length <= maxLength) {
+    return true
+  } else {
+    return `Must not be more than ${maxLength} characters long.`
+  }
+}
+
 const includeLetters = (value) => {
   if (/[a-z]/.test(value)) {
     return true
@@ -46,6 +54,6 @@ const noSpace = (value) => {
   }
 }
 
-const validation = { required, match, minLength, includeLetters, includeNumbers, noSpace }
+const validation = { required, match, minLength, maxLength, includeLetters, includeNumbers, noSpace }
 
 export default validation
