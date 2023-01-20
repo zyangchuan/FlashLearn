@@ -295,8 +295,8 @@
               <v-textarea 
                 label="Text"
                 v-model="flashGenText"
-                counter="120"
-                v-bind:rules="[validation.required, validation.minLength(flashGenText, 120), validation.maxLength(flashGenText, 1000)]"
+                counter="2000"
+                v-bind:rules="[validation.required, validation.minLength(flashGenText, 120), validation.maxLength(flashGenText, 2000)]"
               ></v-textarea>
             </template>
 
@@ -492,7 +492,9 @@ export default {
             await generateCards()
             flashGenSpinner.value = false
             flashGenOverlay.value = false
+            loadingOverlay.value = true
             await loadDeck()
+            loadingOverlay.value = false
           } catch (error) {
             console.log(error)
           }
