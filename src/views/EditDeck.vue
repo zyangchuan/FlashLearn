@@ -203,11 +203,11 @@
         class="mx-auto mt-10"
       >
         <v-row justify="center">
-          <v-col cols="8">
+          <v-col cols="10" sm="6">
             <v-text-field 
               label="Search Card" 
               append-icon="mdi-magnify"
-              density="comfortable"
+              density="compact"
               single-line
               v-model="search"
             ></v-text-field>
@@ -296,7 +296,7 @@
                 label="Text"
                 v-model="flashGenText"
                 counter="120"
-                v-bind:rules="[validation.required, validation.minLength(flashGenText, 120)]"
+                v-bind:rules="[validation.required, validation.minLength(flashGenText, 120), validation.maxLength(flashGenText, 1000)]"
               ></v-textarea>
             </template>
 
@@ -384,7 +384,7 @@ export default {
       //Search card
       const search = ref("")
       const matchingCards = computed(() => {
-        return cards.value.filter(card => card.question.includes(search.value))
+        return cards.value.filter(card => card.question.toLowerCase().includes(search.value.toLowerCase()))
       })
 
       //Delete deck
