@@ -53,7 +53,7 @@
                 class="my-2"
                 color="white"
                 size="large"
-                v-on:click="signInForm.form.validate(), signInPageSignIn()"
+                v-on:click="signInPageSignIn"
                 v-bind:loading="signInLoading"
               >
                 <v-icon icon="mdi-login"></v-icon>
@@ -98,7 +98,7 @@ import { signIn } from "../composables/userAuth"
 import validation from "../composables/validation"
 import { useStore } from 'vuex'
 
-export default ({
+export default {
   components: { ConfirmSignup, Form },
   setup() {
     const router = useRouter() //Router object
@@ -113,24 +113,25 @@ export default ({
     const { email, password, signInLoading, cognitoSignIn } = signIn()
 
     //Sign in page function
-    const signInPageSignIn = () => {
+    const signInPageSignIn =  async () => {
+      await signInForm.value.form.validate()
+
       if (signInForm.value.validated) { //Do not run if the inputs are invalid
-        cognitoSignIn ()
+        try {
           //If successful
-          .then(() => {
-            router.push({ name: 'CardDecks' }) //Redirect to the Card Decks page
-          })
+          await cognitoSignIn ()
+          router.push({ name: 'CardDecks' }) //Redirect to the Card Decks page
+        } catch (error) {
           //If unsuccessful
-          .catch(error => {
-            switch (error.name) { //Handle different errors
-              case "UserNotConfirmedException": //If the user is not confirmed
-                unconfirmed.value = true //Render the confirmation page
-                break
-              case "NotAuthorizedException": //If the credentials are incorrect
-                signInError.value = "Incorrect username or password." //Display error
-                break
-            }
-          })
+          switch (error.name) { //Handle different errors
+            case "UserNotConfirmedException": //If the user is not confirmed
+              unconfirmed.value = true //Render the confirmation page
+              break
+            case "NotAuthorizedException": //If the credentials are incorrect
+              signInError.value = "Incorrect username or password." //Display error
+              break
+          }
+        }
       }
     }
 
@@ -151,5 +152,5 @@ export default ({
       validation,
     }
   }
-})
+}
 </script>

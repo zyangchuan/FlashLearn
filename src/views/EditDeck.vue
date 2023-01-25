@@ -62,7 +62,7 @@
             label="Deck description"
             v-model="editDeckDesc"
             counter="150"
-            v-bind:rules="[validation.maxLength(editDeckName, 150)]"
+            v-bind:rules="[validation.maxLength(editDeckDesc, 150)]"
           ></v-textarea>
         </template>
 
@@ -70,7 +70,7 @@
           <div class="d-flex flex-end">
             <v-btn 
               variant="flat"
-              v-on:click="editDeckForm.form.validate(), editDeckPageUpdateDeck()"
+              v-on:click="editDeckPageUpdateDeck"
             >
               Apply
             </v-btn>
@@ -111,7 +111,7 @@
             label="Answer"
             v-model="editCardAnswer"
             counter="150"
-            v-bind:rules="[validation.maxLength(editCardQuestion, 150)]"
+            v-bind:rules="[validation.maxLength(editCardAnswer, 150)]"
           ></v-textarea>
         </template>
 
@@ -119,7 +119,8 @@
           <div class="d-flex flex-end">
             <v-btn 
               variant="flat"
-              v-on:click="editCardForm.form.validate(), editDeckPageUpdateCard()"
+              :loading="updateCardLoading"
+              v-on:click="editDeckPageUpdateCard"
             >
               Apply
             </v-btn>
@@ -190,12 +191,10 @@
               color="blue" 
               width="130"
               prepend-icon="mdi-pencil"
-              v-on:click="editDeckOverlay = true">
+              v-on:click="openEditDeckOverlay">
               Edit Details
             </v-btn>
           </div>
-
-
         </div>
       </v-card>
       
@@ -265,7 +264,7 @@
               <div class="d-flex flex-end">
                 <v-btn 
                   variant="flat"
-                  v-on:click="createCardForm.form.validate(), editDeckPageCreateCard()"
+                  v-on:click="editDeckPageCreateCard"
                 >
                   Create
                 </v-btn>
@@ -306,7 +305,7 @@
                   variant="flat"
                   class="text-yellow-lighten-2"
                   :loading="flashGenSpinner"
-                  v-on:click="flashGenForm.form.validate(), editDeckPageFlashGen()"
+                  v-on:click="editDeckPageFlashGen()"
                 >
                   Generate Cards
                 </v-btn>
@@ -372,8 +371,6 @@ export default {
         loadDeck()
           .then(() => {
             //Copy the values so that they do not change when editing deck
-            editDeckName.value = deckName.value 
-            editDeckDesc.value = deckDesc.value
             loadingOverlay.value = false
           })
           .catch(error => {
@@ -403,12 +400,21 @@ export default {
       const editDeckOverlay = ref(false)
       const editDeckForm = ref()
 
+      //Open edit deck overlay
+      const openEditDeckOverlay = () => {
+        editDeckOverlay.value = true
+        editDeckName.value = deckName.value 
+        editDeckDesc.value = deckDesc.value
+      }
+
       const editDeckPageUpdateDeck = async () => {
+        await editDeckForm.value.form.validate()
+
         if (editDeckForm.value.validated) {
-          editDeckOverlay.value = false
-          loadingOverlay.value = true
           try {
             await updateDeck()
+            editDeckOverlay.value = false
+            loadingOverlay.value = true
             await loadDeck()
             loadingOverlay.value = false
           } catch (error) {
@@ -441,6 +447,7 @@ export default {
       const editCardForm = ref()
       const editCardID = ref("")
       const editCardOverlay = ref(false)
+      const updateCardLoading = ref(false)
       const editCardQuestion = ref("")
       const editCardAnswer = ref("")
 
@@ -452,9 +459,13 @@ export default {
       }
 
       const editDeckPageUpdateCard = async () => {
+        await editCardForm.value.form.validate()
+
         if (editCardForm.value.validated) {
           try {
+            updateCardLoading.value = true
             await updateCard(editCardID.value, editCardQuestion.value, editCardAnswer.value)
+            updateCardLoading.value = false
             editCardOverlay.value = false
             await loadDeck()
           } catch (error) {
@@ -468,6 +479,8 @@ export default {
       const createCardOverlay = ref(false)
 
       const editDeckPageCreateCard = async () => {
+        await createCardForm.value.form.validate()
+
         if (createCardForm.value.validated) {
           try {
             await createCard()
@@ -486,6 +499,8 @@ export default {
       const { flashGenText, generateCards } = flashGen()
 
       const editDeckPageFlashGen = async () => {
+        await flashGenForm.value.form.validate()
+
         if (flashGenForm.value.validated) {
           try {
             flashGenSpinner.value = true
@@ -509,6 +524,7 @@ export default {
         loadingOverlay,
         confirmDeleteDeckPrompt,
         editDeckPageDeleteDeck,
+        openEditDeckOverlay,
         editDeckOverlay,
         editDeckForm,
         editDeckName,
@@ -519,6 +535,7 @@ export default {
         editDeckPageDeleteCard,
         editCardForm,
         editCardOverlay,
+        updateCardLoading,
         editCardQuestion,
         editCardAnswer,
         openEditCardOverlay,

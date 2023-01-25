@@ -46,7 +46,7 @@
         <v-btn 
           variant="flat" 
           :loading="confirmLoading"
-          v-on:click="confirmForm.form.validate(), confirmAcc()"
+          v-on:click="confirmAcc"
         >
           Continue
         </v-btn>
@@ -111,6 +111,8 @@ export default {
 
     // Confirm account function
     const confirmAcc = async () => {
+      await confirmForm.value.form.validate()
+
       if (confirmForm.value.validated) { //Do not run if the inputs are invalid
         confirmLoading.value = true //Loading spinner renders
 

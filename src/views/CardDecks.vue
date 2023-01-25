@@ -67,7 +67,7 @@
           <div class="d-flex flex-end">
             <v-btn 
               variant="flat"
-              v-on:click="createDeckForm.form.validate(), cardDecksPageCreateDeck()"
+              v-on:click="cardDecksPageCreateDeck"
             >
               Create
             </v-btn>
@@ -197,6 +197,8 @@ export default {
     const { deckName, deckDesc, createDeck } = deckCreator()
 
     const cardDecksPageCreateDeck = async () => {
+      createDeckForm.value.form.validate()
+
       if (createDeckForm.value.validated) {
         createDeckOverlay.value = false
         loadingDecksOverlay.value = true

@@ -19,7 +19,7 @@
   <v-navigation-drawer app temporary v-model="drawer" width="300">
     <div class="d-flex flex-column align-center my-10">
       <v-avatar size="100" class="mb-2">
-        <v-img cover src="avatar.jpg"></v-img>
+        <v-img cover src="../assets/avatar.jpg"></v-img>
       </v-avatar>
       <p class="text-body-1 white">{{ username }}</p>
     </div>

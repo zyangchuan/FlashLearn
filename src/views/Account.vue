@@ -4,7 +4,7 @@
     <v-card class="pa-6" max-width="800px">
       <div class="d-flex flex-row align-center">
         <v-avatar size="100" class="mb-2">
-          <v-img cover src="avatar.JPG"></v-img>
+          <v-img cover src="../assets/avatar.jpg"></v-img>
         </v-avatar>
         <p class="text-h5 font-weight-medium mx-6">{{ display_username }}</p>
       </div>

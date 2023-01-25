@@ -66,7 +66,7 @@
                 variant="flat" 
                 size="large" 
                 :loading="signUpLoading" 
-                v-on:click="signUpForm.form.validate(), signUpPageSignUp()"
+                v-on:click="signUpPageSignUp"
               >
                 Sign up
               </v-btn>
@@ -115,22 +115,23 @@ export default {
     const signUpError = ref("")
     const { email, password, cpassword, signUpLoading, cognitoSignUp } = signUp()
 
-    const signUpPageSignUp = () => {
+    const signUpPageSignUp = async () => {
+      await signUpForm.value.form.validate()
+
       if (signUpForm.value.validated) {
-        cognitoSignUp ()
-          .then(() => {
-            unconfirmed.value = true
-          })
-          .catch(error => {
-            switch (error.name) {
-              case "UsernameExistsException": 
-                signUpError.value = "An account with the given email already exists."
-                break
-              case "InvalidParameterException":
-                signUpError.value = "Invalid email address format."
-                break
-            }
-          })
+        try {
+          await cognitoSignUp ()
+          unconfirmed.value = true
+        } catch (error) {
+          switch (error.name) {
+            case "UsernameExistsException": 
+              signUpError.value = "An account with the given email already exists."
+              break
+            case "InvalidParameterException":
+              signUpError.value = "Invalid email address format."
+              break
+          }
+        }
       }
     }
 
