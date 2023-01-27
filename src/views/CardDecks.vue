@@ -223,7 +223,7 @@ export default {
       deck.playLoading = true
       store.dispatch("loadCards", deck.deckid)
         .then(() => {
-          if (store.getters.getStudyCardsCount == 0) {
+          if (store.state.studyCards.length == 0) {
             deck.playLoading = false
             openNoCardOverlay(deck)
           } else {

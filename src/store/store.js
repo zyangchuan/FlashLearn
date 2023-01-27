@@ -48,6 +48,9 @@ export const store = createStore ({
     addStudiedCount (state) {
       state.studiedCount ++
     },
+    resetStudiedCount (state) {
+      state.studiedCount = 0
+    },
     popCard (state) {
       return state.studyCards.pop()
     },
@@ -85,6 +88,7 @@ export const store = createStore ({
       return axios.get('https://f4ng7av2s6.execute-api.ap-southeast-1.amazonaws.com/flashlearn-test/card-decks/study', loadCards_config)
         .then((response) => {
           context.commit("setCurrentDeckID", deckid)
+          context.commit("resetStudiedCount")
           context.commit("createCardStack", response.data)
         })
         .catch((error) => {

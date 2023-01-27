@@ -13,7 +13,7 @@
         <h1 class="text-h5 text-sm-h4 font-weight-bold my-10">Studying {{ deckname }}</h1>
         <v-btn variant="outlined" prepend-icon="mdi-arrow-left" class="text-capitalize" v-bind:to="{ name: 'CardDecks' }">Back</v-btn>
       </div>
-      <div class="w-75 mx-auto mt-10">
+      <div class="w-75 mx-auto">
         <p class="text-h6 text-center text-grey">Click/Tap the card to reveal the answer</p>
       </div>
       
@@ -50,31 +50,29 @@
       </v-row>
     </div>
 
-    <v-overlay v-model="completeOverlay" scrim="black" class="justify-center align-center">
-      <div style="max-width: 500px;">
-        <v-card
-          class="pa-6 mx-5">
-          <p class="text-h6 font-weight-light text-center">Good job! You finished studying this deck!</p>
-          <div class="d-flex justify-center mt-6">
-            <v-btn variant="flat" class="text-capitalize" v-on:click="studyAgain()">Study Again</v-btn>
-            <v-btn variant="flat" class="text-capitalize" v-on:click="finish()">Finish</v-btn>
-          </div>
-        </v-card>
-      </div>
-    </v-overlay>
+    <PopUpPrompt ref="completePrompt">
+      <template v-slot:message>
+        Good job! You finished studying this deck!
+      </template>
+      <template v-slot:actions>
+        <v-btn variant="flat" class="text-capitalize" v-on:click="studyAgain()">Study Again</v-btn>
+        <v-btn variant="flat" class="text-capitalize" v-on:click="finish()">Finish</v-btn>
+      </template>
+    </PopUpPrompt>
   </v-container>
 </template>
 
 <script>
 import axios from 'axios'
-import FlashCard from '../components/FlashCard.vue'
+import FlashCard from "../components/FlashCard.vue"
+import PopUpPrompt from "../components/PopUpPrompt.vue"
+
 export default {
   props: ['deckname'],
-  components: { FlashCard },
+  components: { FlashCard, PopUpPrompt },
   data () {
     return {
       loadingOverlay: false,
-      completeOverlay: false,
       nFLoading: false,
       nSLoading: false,
       fLoading: false,
@@ -107,7 +105,6 @@ export default {
           this.nFLoading = false
           this.$store.commit("popCard")
           this.$store.commit("insertCard", {card: this.currentCard, noOfCardsAfter: 1})
-          this.$store.commit("addStudiedCount")
           this.currentCard = this.$store.getters.getCurrentCard
         })
         .catch(error => {
@@ -133,7 +130,6 @@ export default {
           this.nSLoading = false
           this.$store.commit("popCard")
           this.$store.commit("insertCard", {card: this.currentCard, noOfCardsAfter: 2})
-          this.$store.commit("addStudiedCount")
           this.currentCard = this.$store.getters.getCurrentCard
         })
         .catch(error => {
@@ -157,25 +153,25 @@ export default {
       axios.put('https://f4ng7av2s6.execute-api.ap-southeast-1.amazonaws.com/flashlearn-test/card-decks/study', cardInfo, updateCard_config)
         .then(() => {
           this.fLoading = false
-          this.noOfCardsStudied ++
-          if (this.$store.getters.deckIsEmpty) {
-            this.completeOverlay = true
-          }
           this.$store.commit("popCard")
-          this.$store.commit("addStudiedCount")
-          this.currentCard = this.$store.getters.getCurrentCard
+          if (this.$store.getters.deckIsEmpty) {
+            this.$refs.completePrompt.show = true
+          } else {
+            this.$store.commit("addStudiedCount")
+            this.currentCard = this.$store.getters.getCurrentCard
+          }
         })
         .catch(error => {
           console.log(error)
         })
     },
     async studyAgain() {
-      this.completeOverlay = false
+      this.$refs.completePrompt.show = false
       this.loadingOverlay = true
       await this.$store.dispatch("loadCards", this.$store.state.currentDeckID)
       this.loadCards()
       this.loadingOverlay = false
-      this.noOfCardsStudied = 0
+      this.$store.commit("resetStudiedCount")
     },
     finish() {
       this.$router.push({ name: 'CardDecks' })
