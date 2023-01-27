@@ -1,7 +1,6 @@
 import { createStore } from 'vuex'
 import { Auth } from 'aws-amplify'
 import VuexPersistence from 'vuex-persist'
-import { cardStack } from '../functions/cardstack.js'
 import axios from 'axios'
 
 const vuexLocal = new VuexPersistence({
@@ -15,7 +14,9 @@ const vuexSession = new VuexPersistence({
   storage: window.sessionStorage,
   reducer: state => ({
     currentDeckID: state.currentDeckID,
-    studyCards: state.studyCards
+    studyCards: state.studyCards,
+    studyCardsCount: state.studyCardsCount,
+    studiedCount: state.studiedCount
   })
 })
 
@@ -24,10 +25,14 @@ export const store = createStore ({
   state: {
     currentUser: null,
     currentDeckID: "",
-    studyCards: null
+    studyCards: [],
+    studyCardsCount: 0,
+    studiedCount: 0
   },
   getters: {
-    isAuthenticated: state => state.currentUser !== null
+    isAuthenticated: state => state.currentUser !== null,
+    deckIsEmpty: state => state.studyCards.length == 0,
+    getCurrentCard: state => state.studyCards[state.studyCards.length - 1]
   },
   mutations: {
     setCurrentUser (state, user) {
@@ -37,7 +42,25 @@ export const store = createStore ({
       state.currentDeckID = deckid
     },
     createCardStack (state, cards) {
-      state.studyCards = new cardStack(cards)
+      state.studyCards = cards
+      state.studyCardsCount = cards.length
+    },
+    addStudiedCount (state) {
+      state.studiedCount ++
+    },
+    popCard (state) {
+      return state.studyCards.pop()
+    },
+    insertCard (state, payload) {
+      if (state.studyCards.length == 1) {
+        state.studyCards.splice(0, 0, payload.card)
+      }
+      else if (state.studyCards.length == 0) {
+        state.studyCards.push(payload.card)
+      }
+      else {
+        state.studyCards.splice(state.studyCards.length - payload.noOfCardsAfter, 0, payload.card)
+      }
     }
   },
   actions: {

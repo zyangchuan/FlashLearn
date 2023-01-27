@@ -88,27 +88,5 @@ export default {
 
     return { drawer, username, signOutLoading, signOut }
   }
- 
-
-  // data () {
-  //   return {
-  //     drawer: false,
-  //     username: ""
-  //   }
-  // },
-  // methods: {
-  //   async signOut() {
-  //     try {
-  //       await Auth.signOut()
-  //       this.$store.commit("setCurrentUser", null)
-  //       this.$router.push({ name: "Signin" })
-  //     } catch (error) {
-  //       console.log('error signing out: ', error);
-  //     }
-  //   }
-  // },
-  // mounted() {
-  //   this.username = this.$store.state.currentUser.attributes.preferred_username
-  // }
 }
 </script>

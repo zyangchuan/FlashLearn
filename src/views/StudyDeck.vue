@@ -20,10 +20,13 @@
       <v-row class="d-flex flex-column">
         <v-col class="d-flex flex-column align-center justify-center fill-height">
           <FlashCard  :card="currentCard" size="large"/>
-          <p class="text-h6">{{ noOfCardsStudied }} / {{ totalCardsLength }} <span class="mx-2">Cards Studied</span></p>
+          <p class="text-body-1">{{ this.$store.state.studiedCount }} / {{ this.$store.state.studyCardsCount }} <span class="mx-2">Cards Studied</span></p>
+        </v-col>
+        <v-col>
+          <p class="text-h6 text-center">How familiar are you with this card?</p>
         </v-col>
         <v-col class="d-flex flex-column justify-center align-center">
-          <div class="mt-5">
+          <div>
             <v-btn 
               variant="outlined" 
               class="mx-2 text-capitalize text-red" 
@@ -75,9 +78,7 @@ export default {
       nFLoading: false,
       nSLoading: false,
       fLoading: false,
-      currentCard: {},
-      totalCardsLength: 0,
-      noOfCardsStudied: 0
+      currentCard: {}
     }
   },
   mounted() {
@@ -85,8 +86,7 @@ export default {
   },
   methods: {
     loadCards() {
-      this.totalCardsLength = this.$store.state.studyCards.cardCount()
-      this.currentCard = this.$store.state.studyCards.pop()
+      this.currentCard = this.$store.getters.getCurrentCard
     },
     notFamiliar(card) {
       card.familiarity -= 2
@@ -105,8 +105,10 @@ export default {
       axios.put('https://f4ng7av2s6.execute-api.ap-southeast-1.amazonaws.com/flashlearn-test/card-decks/study', cardInfo, updateCard_config)
         .then(() => {
           this.nFLoading = false
-          this.$store.state.studyCards.insert(this.currentCard, 1)
-          this.currentCard = this.$store.state.studyCards.pop()
+          this.$store.commit("popCard")
+          this.$store.commit("insertCard", {card: this.currentCard, noOfCardsAfter: 1})
+          this.$store.commit("addStudiedCount")
+          this.currentCard = this.$store.getters.getCurrentCard
         })
         .catch(error => {
           console.log(error)
@@ -129,8 +131,10 @@ export default {
       axios.put('https://f4ng7av2s6.execute-api.ap-southeast-1.amazonaws.com/flashlearn-test/card-decks/study', cardInfo, updateCard_config)
         .then(() => {
           this.nSLoading = false
-          this.$store.state.studyCards.insert(this.currentCard, 2)
-          this.currentCard = this.$store.state.studyCards.pop()
+          this.$store.commit("popCard")
+          this.$store.commit("insertCard", {card: this.currentCard, noOfCardsAfter: 2})
+          this.$store.commit("addStudiedCount")
+          this.currentCard = this.$store.getters.getCurrentCard
         })
         .catch(error => {
           console.log(error)
@@ -154,10 +158,12 @@ export default {
         .then(() => {
           this.fLoading = false
           this.noOfCardsStudied ++
-          if (this.$store.state.studyCards.isEmpty()) {
+          if (this.$store.getters.deckIsEmpty) {
             this.completeOverlay = true
           }
-          this.currentCard = this.$store.state.studyCards.pop()
+          this.$store.commit("popCard")
+          this.$store.commit("addStudiedCount")
+          this.currentCard = this.$store.getters.getCurrentCard
         })
         .catch(error => {
           console.log(error)
