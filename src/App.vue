@@ -69,4 +69,12 @@ export default {
     display: block;
     margin: auto;
   }
+  .avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: url("@/assets/avatar.jpg");
+    background-position: 50% 50%;
+    background-size: cover;
+  }
 </style>

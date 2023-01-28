@@ -104,6 +104,7 @@ export default {
         .then(() => {
           this.nFLoading = false
           this.$store.commit("popCard")
+          this.currentCard.isflipped = false
           this.$store.commit("insertCard", {card: this.currentCard, noOfCardsAfter: 1})
           this.currentCard = this.$store.getters.getCurrentCard
         })
@@ -129,6 +130,7 @@ export default {
         .then(() => {
           this.nSLoading = false
           this.$store.commit("popCard")
+          this.currentCard.isflipped = false
           this.$store.commit("insertCard", {card: this.currentCard, noOfCardsAfter: 2})
           this.currentCard = this.$store.getters.getCurrentCard
         })

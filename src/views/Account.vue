@@ -3,9 +3,8 @@
     <h1 class="text-h5 text-sm-h4 text-md-h4 text-lg-h4 font-weight-bold my-10">Account</h1>
     <v-card class="pa-6" max-width="800px">
       <div class="d-flex flex-row align-center">
-        <v-avatar size="100" class="mb-2">
-          <v-img cover src="../assets/avatar.jpg"></v-img>
-        </v-avatar>
+        <div class="avatar">
+        </div>
         <p class="text-h5 font-weight-medium mx-6">{{ display_username }}</p>
       </div>
 
@@ -84,5 +83,4 @@ export default {
 </script>
 
 <style>
-  
 </style>

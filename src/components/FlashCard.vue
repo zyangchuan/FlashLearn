@@ -42,7 +42,7 @@ export default {
     position: relative;
     width: 100%;
     height: 100%;
-    transition: transform 0.6s;
+    transition: transform 0.5s;
     transform-style: preserve-3d;;
   }
   .cardface-back, .cardface-front  {
