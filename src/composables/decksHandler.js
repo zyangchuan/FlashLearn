@@ -2,9 +2,11 @@ import { ref } from "vue"
 import { useStore } from "vuex"
 import axios from 'axios'
 
-export const decksLoader = () => {
+const decksHandler = () => {
   const store = useStore()
   const decks = ref([])
+  const deckName = ref("")
+  const deckDesc = ref("")
 
   const loadDecks = async () => {
 
@@ -25,14 +27,6 @@ export const decksLoader = () => {
     }
   }
 
-  return { decks, loadDecks }
-}
-
-export const deckCreator = () => {
-  const store = useStore()
-  const deckName = ref("")
-  const deckDesc = ref("")
-
   const createDeck = async () => {
     const addDeck_config = {
       headers: {
@@ -49,11 +43,13 @@ export const deckCreator = () => {
     }
 
     try {
-      await axios.post('https://f4ng7av2s6.execute-api.ap-southeast-1.amazonaws.com/flashlearn-test/card-decks', deckInfo, addDeck_config)
+      return axios.post('https://f4ng7av2s6.execute-api.ap-southeast-1.amazonaws.com/flashlearn-test/card-decks', deckInfo, addDeck_config)
     } catch (error) {
       throw error
     }
   }
 
-  return {deckName, deckDesc, createDeck}
+  return { decks, loadDecks, deckName, deckDesc, createDeck }
 }
+
+export default decksHandler

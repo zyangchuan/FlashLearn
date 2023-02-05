@@ -19,7 +19,7 @@ const flashGen = () => {
         "text": flashGenText.value
       }
     try {
-      await axios.post('https://f4ng7av2s6.execute-api.ap-southeast-1.amazonaws.com/flashlearn-test/card-decks/edit-deck/flashgen', text, flashGen_config)
+      return axios.post('https://f4ng7av2s6.execute-api.ap-southeast-1.amazonaws.com/flashlearn-test/card-decks/edit-deck/flashgen', text, flashGen_config)
     } catch (error) {
       throw error
     }

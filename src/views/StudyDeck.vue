@@ -66,7 +66,6 @@
 import axios from 'axios'
 import FlashCard from "../components/FlashCard.vue"
 import PopUpPrompt from "../components/PopUpPrompt.vue"
-
 export default {
   props: ['deckname'],
   components: { FlashCard, PopUpPrompt },
@@ -181,4 +180,3 @@ export default {
   }
 }
 </script>
-  

@@ -19,7 +19,7 @@ const cardHandler = () => {
     }
 
     try {
-      axios.delete('https://f4ng7av2s6.execute-api.ap-southeast-1.amazonaws.com/flashlearn-test/card-decks/edit-deck', deleteCard_config)
+      return axios.delete('https://f4ng7av2s6.execute-api.ap-southeast-1.amazonaws.com/flashlearn-test/card-decks/edit-deck', deleteCard_config)
     } catch (error) {
       throw error
     }
@@ -42,7 +42,7 @@ const cardHandler = () => {
     }
 
     try {
-      axios.put('https://f4ng7av2s6.execute-api.ap-southeast-1.amazonaws.com/flashlearn-test/card-decks/edit-deck', cardInfo, editCard_config)
+      return axios.put('https://f4ng7av2s6.execute-api.ap-southeast-1.amazonaws.com/flashlearn-test/card-decks/edit-deck', cardInfo, editCard_config)
     } catch (error) {
       throw error
     }
@@ -63,7 +63,7 @@ const cardHandler = () => {
     }
 
     try {
-      axios.post('https://f4ng7av2s6.execute-api.ap-southeast-1.amazonaws.com/flashlearn-test/card-decks/edit-deck', cardInfo, createCard_config)
+      return axios.post('https://f4ng7av2s6.execute-api.ap-southeast-1.amazonaws.com/flashlearn-test/card-decks/edit-deck', cardInfo, createCard_config)
     } catch (error) {
       throw error
     }

@@ -45,7 +45,7 @@ const deckHandler = () => {
     }
   
     try {
-      axios.delete('https://f4ng7av2s6.execute-api.ap-southeast-1.amazonaws.com/flashlearn-test/card-decks', deleteDeck_config)
+      return axios.delete('https://f4ng7av2s6.execute-api.ap-southeast-1.amazonaws.com/flashlearn-test/card-decks', deleteDeck_config)
     } catch (error) {
       throw error
     }
@@ -66,7 +66,9 @@ const deckHandler = () => {
     }
 
     try {
-      axios.put('https://f4ng7av2s6.execute-api.ap-southeast-1.amazonaws.com/flashlearn-test/card-decks', deckInfo, editDeck_config)
+      const newDeckInfo = await axios.put('https://f4ng7av2s6.execute-api.ap-southeast-1.amazonaws.com/flashlearn-test/card-decks', deckInfo, editDeck_config)
+      deckName.value = newDeckInfo.data.deckname
+      deckDesc.value = newDeckInfo.data.descp
     } catch (error) {
       throw error
     }

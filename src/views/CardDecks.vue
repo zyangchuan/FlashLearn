@@ -67,6 +67,7 @@
           <div class="d-flex flex-end">
             <v-btn 
               variant="flat"
+              :loading="createDeckSpinner"
               v-on:click="cardDecksPageCreateDeck"
             >
               Create
@@ -165,7 +166,7 @@ import { onMounted } from '@vue/runtime-core'
 import { useStore } from 'vuex'
 import Form from "../components/Form.vue"
 import PopUpPrompt from "../components/PopUpPrompt.vue"
-import { decksLoader, deckCreator } from "../composables/decksHandler"
+import decksHandler from "../composables/decksHandler"
 import validation from "../composables/validation"
 
 
@@ -179,7 +180,7 @@ export default {
 
     //Load decks
     const loadingDecksOverlay = ref(false)
-    const { decks, loadDecks } = decksLoader()
+    const { decks, loadDecks, deckName, deckDesc, createDeck } = decksHandler()
     
     onMounted(() => {
       loadingDecksOverlay.value = true
@@ -194,20 +195,23 @@ export default {
 
     //Create a new deck
     const createDeckOverlay = ref(false)
-    const { deckName, deckDesc, createDeck } = deckCreator()
+    const createDeckSpinner = ref(false)
 
     const cardDecksPageCreateDeck = async () => {
-      createDeckForm.value.form.validate()
+      await createDeckForm.value.form.validate()
 
       if (createDeckForm.value.validated) {
         createDeckOverlay.value = false
         loadingDecksOverlay.value = true
 
         try {
+          createDeckSpinner.value = true
           await createDeck()
+          createDeckSpinner.value = false
           loadingDecksOverlay.value = false
           deckName.value = ""
           deckDesc.value = ""
+          await loadDecks()
         } catch (error) {
           console.log(error)
         }
@@ -246,6 +250,7 @@ export default {
       loadingDecksOverlay,
       loadDecks, 
       createDeckForm,
+      createDeckSpinner,
       deckName, 
       deckDesc, 
       cardDecksPageCreateDeck,

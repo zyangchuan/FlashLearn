@@ -21,6 +21,7 @@
           class="text-capitalize mx-2"
           color="red"
           variant="text"
+          :loading="deleteDeckSpinner"
           v-on:click="editDeckPageDeleteDeck"
         >
           Yes, delete
@@ -70,6 +71,7 @@
           <div class="d-flex flex-end">
             <v-btn 
               variant="flat"
+              :loading="editDeckSpinner"
               v-on:click="editDeckPageUpdateDeck"
             >
               Apply
@@ -144,6 +146,7 @@
           class="text-capitalize mx-2"
           color="red"
           variant="text"
+          :loading="deleteCardSpinner"
           v-on:click="editDeckPageDeleteCard()"
         >
           Yes, delete
@@ -264,6 +267,7 @@
               <div class="d-flex flex-end">
                 <v-btn 
                   variant="flat"
+                  :loading="createCardSpinner"
                   v-on:click="editDeckPageCreateCard"
                 >
                   Create
@@ -386,9 +390,12 @@ export default {
 
       //Delete deck
       const confirmDeleteDeckPrompt = ref()
+      const deleteDeckSpinner = ref(false)
       const editDeckPageDeleteDeck = () => {
+        deleteDeckSpinner.value = true
         deleteDeck()
           .then(() => {
+            deleteDeckSpinner.value = false
             router.push({ name: 'CardDecks' })
           })
           .catch (error => {
@@ -399,6 +406,7 @@ export default {
       //Update deck
       const editDeckOverlay = ref(false)
       const editDeckForm = ref()
+      const editDeckSpinner = ref(false)
 
       //Open edit deck overlay
       const openEditDeckOverlay = () => {
@@ -412,10 +420,13 @@ export default {
 
         if (editDeckForm.value.validated) {
           try {
+            editDeckSpinner.value = true
             await updateDeck()
+            editDeckSpinner.value = false
             editDeckOverlay.value = false
+            editDeckName.value = ""
+            editDeckDesc.value = ""
             loadingOverlay.value = true
-            await loadDeck()
             loadingOverlay.value = false
           } catch (error) {
             console.log(error)
@@ -427,6 +438,7 @@ export default {
       const confirmDeleteCardPrompt = ref()
       const { cardQuestion, cardAnswer, deleteCard, updateCard, createCard } = cardHandler()
       const deleteCardID = ref("")
+      const deleteCardSpinner = ref(false)
 
       const openDeleteCardPrompt = (cardID) => {
         deleteCardID.value = cardID
@@ -435,7 +447,9 @@ export default {
       
       const editDeckPageDeleteCard = async () => {
         try {
+          deleteCardSpinner.value = true
           await deleteCard(deleteCardID.value)
+          deleteCardSpinner.value = false
           confirmDeleteCardPrompt.value.show = false
           await loadDeck()
         } catch (error) {
@@ -477,14 +491,20 @@ export default {
       //Create card
       const createCardForm = ref()
       const createCardOverlay = ref(false)
+      const createCardSpinner = ref(false)
 
       const editDeckPageCreateCard = async () => {
         await createCardForm.value.form.validate()
 
         if (createCardForm.value.validated) {
           try {
-            await createCard()
+            createCardSpinner.value = true
+            const newCard = await createCard()
+            createCardSpinner.value = false
+            cards.value.push(newCard.data)
             createCardOverlay.value = false
+            cardQuestion.value = ""
+            cardAnswer.value = ""
             await loadDeck()
           } catch (error) {
             console.log(error)
@@ -507,6 +527,7 @@ export default {
             await generateCards()
             flashGenSpinner.value = false
             flashGenOverlay.value = false
+            flashGenText.value = ""
             loadingOverlay.value = true
             await loadDeck()
             loadingOverlay.value = false
@@ -523,14 +544,17 @@ export default {
         matchingCards, 
         loadingOverlay,
         confirmDeleteDeckPrompt,
+        deleteDeckSpinner,
         editDeckPageDeleteDeck,
         openEditDeckOverlay,
         editDeckOverlay,
+        editDeckSpinner,
         editDeckForm,
         editDeckName,
         editDeckDesc,
         editDeckPageUpdateDeck,
         confirmDeleteCardPrompt,
+        deleteCardSpinner,
         openDeleteCardPrompt,
         editDeckPageDeleteCard,
         editCardForm,
@@ -542,6 +566,7 @@ export default {
         editDeckPageUpdateCard,
         createCardForm,
         createCardOverlay,
+        createCardSpinner,
         cardQuestion,
         cardAnswer,
         editDeckPageCreateCard,
