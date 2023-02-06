@@ -32,19 +32,19 @@
               class="mx-2 text-capitalize text-red" 
               width="110px"
               v-bind:loading="nFLoading"
-              v-on:click="notFamiliar(currentCard)">Not Familiar</v-btn>
+              v-on:click="studyDeckNotFamiliar()">Not Familiar</v-btn>
             <v-btn 
               variant="outlined" 
               class="mx-2 text-capitalize text-orange" 
               width="85px"
               v-bind:loading="nSLoading"
-              v-on:click="notSure(currentCard)">Not Sure</v-btn>
+              v-on:click="studyDeckNotSure()">Not Sure</v-btn>
             <v-btn 
               variant="outlined"
               class="mx-2 text-capitalize text-green" 
               width="75px"
               v-bind:loading="fLoading"
-              v-on:click="familiar(currentCard)">Familiar</v-btn>
+              v-on:click="studyDeckFamiliar()">Familiar</v-btn>
           </div>
         </v-col>
       </v-row>
@@ -55,7 +55,7 @@
         Good job! You finished studying this deck!
       </template>
       <template v-slot:actions>
-        <v-btn variant="flat" class="text-capitalize" v-on:click="studyAgain()">Study Again</v-btn>
+        <v-btn variant="flat" class="text-capitalize" v-on:click="studyDeckAgain()">Study Again</v-btn>
         <v-btn variant="flat" class="text-capitalize" v-on:click="finish()">Finish</v-btn>
       </template>
     </PopUpPrompt>
@@ -63,120 +63,90 @@
 </template>
 
 <script>
-import axios from 'axios'
+import { onMounted, ref } from '@vue/runtime-core'
 import FlashCard from "../components/FlashCard.vue"
 import PopUpPrompt from "../components/PopUpPrompt.vue"
+import studyHandler from "../composables/studyHandler"
+import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
+
 export default {
   props: ['deckname'],
   components: { FlashCard, PopUpPrompt },
-  data () {
-    return {
-      loadingOverlay: false,
-      nFLoading: false,
-      nSLoading: false,
-      fLoading: false,
-      currentCard: {}
+  
+  setup() {
+    const router = useRouter()
+    const store = useStore()
+    const { currentCard, loadCard, notFamiliar, notSure, familiar, studyAgain } = studyHandler()
+
+    onMounted(() => {
+      loadCard()
+    })
+
+    const noOfCardsStudied = ref(0)
+    const completeOverlay = ref(false)
+
+    //data and methods for NotFamiliar
+    const nFLoading = ref(false)
+    const studyDeckNotFamiliar = async () => {
+      nFLoading.value = true
+
+      try {
+        currentCard.value.isflipped = false
+        await notFamiliar()
+        nFLoading.value = false
+      } catch (error) {
+        console.log(error)
+      }
     }
-  },
-  mounted() {
-    this.loadCards()
-  },
-  methods: {
-    loadCards() {
-      this.currentCard = this.$store.getters.getCurrentCard
-    },
-    notFamiliar(card) {
-      card.familiarity -= 2
-      if (card.familiarity < 0) {
-        card.familiarity = 0
+
+    //data and methods for NotSure
+    const nSLoading = ref(false)
+    const studyDeckNotSure = async () => {
+      nSLoading.value = true
+
+      try {
+        currentCard.value.isflipped = false
+        await notSure()
+        nSLoading.value = false
+      } catch (error) {
+        console.log(error)
       }
-      const updateCard_config = {
-        headers: {
-          "Authorization": this.$store.state.currentUser.signInUserSession.idToken.jwtToken
-        }
-      }
-      const cardInfo = {
-        "card": card
-      }
-      this.nFLoading = true
-      axios.put('https://f4ng7av2s6.execute-api.ap-southeast-1.amazonaws.com/flashlearn-test/card-decks/study', cardInfo, updateCard_config)
-        .then(() => {
-          this.nFLoading = false
-          this.$store.commit("popCard")
-          this.currentCard.isflipped = false
-          this.$store.commit("insertCard", {card: this.currentCard, noOfCardsAfter: 1})
-          this.currentCard = this.$store.getters.getCurrentCard
-        })
-        .catch(error => {
-          console.log(error)
-        })
-    },
-    notSure(card) {
-      card.familiarity -= 1
-      if (card.familiarity < 0) {
-        card.familiarity = 0
-      }
-      const updateCard_config = {
-        headers: {
-          "Authorization": this.$store.state.currentUser.signInUserSession.idToken.jwtToken
-        }
-      }
-      const cardInfo = {
-        "card": card
-      }
-      this.nSLoading = true
-      axios.put('https://f4ng7av2s6.execute-api.ap-southeast-1.amazonaws.com/flashlearn-test/card-decks/study', cardInfo, updateCard_config)
-        .then(() => {
-          this.nSLoading = false
-          this.$store.commit("popCard")
-          this.currentCard.isflipped = false
-          this.$store.commit("insertCard", {card: this.currentCard, noOfCardsAfter: 2})
-          this.currentCard = this.$store.getters.getCurrentCard
-        })
-        .catch(error => {
-          console.log(error)
-        })
-    },
-    familiar(card) {
-      card.familiarity += 2
-      if (card.familiarity > 4) {
-        card.familiarity = 4
-      }
-      const updateCard_config = {
-        headers: {
-          "Authorization": this.$store.state.currentUser.signInUserSession.idToken.jwtToken
-        }
-      }
-      const cardInfo = {
-        "card": card
-      }
-      this.fLoading = true
-      axios.put('https://f4ng7av2s6.execute-api.ap-southeast-1.amazonaws.com/flashlearn-test/card-decks/study', cardInfo, updateCard_config)
-        .then(() => {
-          this.fLoading = false
-          this.$store.commit("popCard")
-          if (this.$store.getters.deckIsEmpty) {
-            this.$refs.completePrompt.show = true
-          } else {
-            this.$store.commit("addStudiedCount")
-            this.currentCard = this.$store.getters.getCurrentCard
-          }
-        })
-        .catch(error => {
-          console.log(error)
-        })
-    },
-    async studyAgain() {
-      this.$refs.completePrompt.show = false
-      this.loadingOverlay = true
-      await this.$store.dispatch("loadCards", this.$store.state.currentDeckID)
-      this.loadCards()
-      this.loadingOverlay = false
-      this.$store.commit("resetStudiedCount")
-    },
-    finish() {
-      this.$router.push({ name: 'CardDecks' })
     }
+
+    //data and methods for Familiar
+    const fLoading = ref(false)
+    const completePrompt = ref()
+    const studyDeckFamiliar = async () => {
+      fLoading.value = true
+
+      try {
+        await familiar()
+        fLoading.value = false
+        store.commit("addStudiedCount")
+        if (store.getters.deckIsEmpty) {
+            completePrompt.value.show = true
+        }
+      } catch(error) {
+        console.log(error)
+      }
+    }
+    
+    const loadingOverlay = ref(false)
+    const studyDeckAgain = async () => {
+      completePrompt.value.show = false
+      loadingOverlay.value = true
+      await studyAgain()
+      loadCard()
+      loadingOverlay.value = false
+    }
+
+    const finish = () => {
+      router.push({name: "CardDecks"})
+    }
+
+    return { loadingOverlay, nFLoading, nSLoading, fLoading, currentCard, completePrompt, studyDeckNotFamiliar, studyDeckNotSure, studyDeckFamiliar, studyDeckAgain, finish}
   }
 }
 </script>
+  
