@@ -7,6 +7,10 @@
     <v-spacer></v-spacer>
     <p class="h6 mx-6 font-weight-medium hidden-sm-and-down">Hello {{ username }}</p>
     <v-btn 
+      variant="flat" 
+      prepend-icon="mdi-comment-quote-outline"
+      class="text-capitalize">Feedback</v-btn>
+    <v-btn 
       color="white"
       prepend-icon="mdi-exit-to-app"
       :loading="signOutLoading"
