@@ -3,7 +3,7 @@
     <v-row class="align-center">
       <v-col cols="12">
         <div>
-          <h1 class="text-h4 font-weight-light text-center">FlashLearn</h1>
+          <img :src="require('@/assets/flashlearn-text-logo.svg')" style="width: 180px; display: block; margin: 0 auto;">
         </div>
       </v-col>
 

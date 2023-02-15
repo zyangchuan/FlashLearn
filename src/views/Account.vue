@@ -1,44 +1,74 @@
 <template>
   <v-container>
-    <h1 class="text-h5 text-sm-h4 text-md-h4 text-lg-h4 font-weight-bold my-10">Account</h1>
+    <h1 class="text-h5 text-sm-h4 text-md-h4 text-lg-h4 font-weight-bold my-10">
+      Account
+    </h1>
     <v-card class="pa-6" max-width="800px">
       <div class="d-flex flex-row align-center">
-        <div class="avatar">
-        </div>
+        <div class="avatar"></div>
         <p class="text-h5 font-weight-medium mx-6">{{ display_username }}</p>
       </div>
 
-      <v-card class="d-flex flex-column justify-space-between pa-5 mt-6" color="rgb(50,50,50)">
+      <v-card
+        class="d-flex flex-column justify-space-between pa-5 mt-6"
+        color="rgb(50,50,50)"
+      >
         <div class="d-flex flex-row align-center justify-space-between">
           <div class="w-75">
-            <p class="text-subtitle-2 text-sm-subtitle-1 text-md-subtitle-1 text-lg-subtitle-1 font-weight-medium text-uppercase text-grey-lighten-1">Username</p>
+            <p
+              class="text-subtitle-2 text-sm-subtitle-1 text-md-subtitle-1 text-lg-subtitle-1 font-weight-medium text-uppercase text-grey-lighten-1"
+            >
+              Username
+            </p>
             <v-text-field
-              density="compact" 
-              class="mb-n7" 
-              style="width: 85%;"
+              density="compact"
+              class="mb-n7"
+              style="width: 85%"
               autofocus
               v-if="editingUsername"
-              v-model="edit_username">
+              v-model="edit_username"
+            >
             </v-text-field>
-            <p class="text-subtitle-1 text-sm-h6 text-md-h6 text-lg-h6 font-weight-light text-white" v-else>{{ edit_username }}</p>
+            <p
+              class="text-subtitle-1 text-sm-h6 text-md-h6 text-lg-h6 font-weight-light text-white"
+              v-else
+            >
+              {{ edit_username }}
+            </p>
           </div>
-          <v-btn color="white" variant="outlined" size="small"
+          <v-btn
+            color="white"
+            variant="outlined"
+            size="small"
             v-on:click="editingUsername = !editingUsername"
-            v-if="!editingUsername">
+            v-if="!editingUsername"
+          >
             <v-icon icon="mdi-pencil" class="mr-1"></v-icon>
             <span>Edit</span>
           </v-btn>
-          <v-btn color="white" variant="outlined" size="small"
+          <v-btn
+            color="white"
+            variant="outlined"
+            size="small"
             v-on:click="updateUsername"
             v-bind:loading="loading"
-            v-else>
+            v-else
+          >
             <span>Submit</span>
           </v-btn>
         </div>
         <div class="d-flex flex-row align-center justify-space-between">
           <div class="w-75 my-5">
-            <p class="text-subtitle-2 text-sm-subtitle-1 text-md-subtitle-1 text-lg-subtitle-1 font-weight-medium text-uppercase text-grey-lighten-1">Email</p>
-            <p class="text-subtitle-1 text-sm-h6 text-md-h6 text-lg-h6 font-weight-light text-white">{{ email }}</p>
+            <p
+              class="text-subtitle-2 text-sm-subtitle-1 text-md-subtitle-1 text-lg-subtitle-1 font-weight-medium text-uppercase text-grey-lighten-1"
+            >
+              Email
+            </p>
+            <p
+              class="text-subtitle-1 text-sm-h6 text-md-h6 text-lg-h6 font-weight-light text-white"
+            >
+              {{ email }}
+            </p>
           </div>
         </div>
       </v-card>
@@ -47,8 +77,8 @@
 </template>
 
 <script>
-import Navbar from "../components/Navbar.vue"
-import { Auth } from "aws-amplify"
+import Navbar from "../components/Navbar.vue";
+import { Auth } from "aws-amplify";
 
 export default {
   components: { Navbar },
@@ -58,29 +88,31 @@ export default {
       edit_username: "",
       email: "",
       editingUsername: false,
-      loading: false
-    }
+      loading: false,
+    };
   },
   mounted() {
-    this.edit_username = this.$store.state.currentUser.attributes.preferred_username
-    this.display_username = this.$store.state.currentUser.attributes.preferred_username
-    this.email = this.$store.state.currentUser.attributes.email
+    this.edit_username =
+      this.$store.state.currentUser.attributes.preferred_username;
+    this.display_username =
+      this.$store.state.currentUser.attributes.preferred_username;
+    this.email = this.$store.state.currentUser.attributes.email;
   },
   methods: {
-    async updateUsername () {
-      const user = await Auth.currentAuthenticatedUser()
-      this.loading = true
+    async updateUsername() {
+      const user = await Auth.currentAuthenticatedUser();
+      this.loading = true;
       await Auth.updateUserAttributes(user, {
-        preferred_username: this.edit_username
-      })
-      const new_user = await Auth.currentAuthenticatedUser()
-      this.$store.commit("setCurrentUser", new_user)
-      this.editingUsername = false
-      this.display_username = this.edit_username
-    }
-  }  
-}
+        preferred_username: this.edit_username,
+      });
+      const new_user = await Auth.currentAuthenticatedUser();
+      this.$store.commit("setCurrentUser", new_user);
+      this.editingUsername = false;
+      this.loading = false;
+      this.display_username = this.edit_username;
+    },
+  },
+};
 </script>
 
-<style>
-</style>
+<style></style>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 2042.57 530.32">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fff;
+        font-family: OpenSans-Regular, 'Open Sans';
+        font-size: 349.99px;
+      }
+
+      .cls-2 {
+        clip-path: url(#clippath);
+      }
+
+      .cls-3 {
+        fill: none;
+      }
+
+      .cls-4 {
+        fill: url(#linear-gradient);
+      }
+    </style>
+    <clipPath id="clippath">
+      <path class="cls-3" d="M343.3,27.14L214.05,213.71c20.71,0,42.31-.01,63.69-.01v130.39c-75.06,70.89-156.65,147.95-192.17,181.51-6.92,6.55-17.84,6.23-24.39-.7-5.7-6.03-6.19-15.11-1.64-21.67l129.24-186.58c-61.9,0-131.64,.04-180.18,.03-7.76-.01-11.53-9.49-5.89-14.81C76.71,231.97,258.97,59.82,317.27,4.76c15.35-13.8,37.37,5.06,26.03,22.37Z"/>
+    </clipPath>
+    <linearGradient id="linear-gradient" x1="-99.66" y1="268.72" x2="446.09" y2="268.72" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#4bb7d0"/>
+      <stop offset=".47" stop-color="#42adc8"/>
+      <stop offset="1" stop-color="#339dbc"/>
+    </linearGradient>
+  </defs>
+  <g class="cls-2">
+    <rect class="cls-4" x="-99.66" y="-52.53" width="545.75" height="642.5"/>
+  </g>
+  <text class="cls-1" transform="translate(294.85 383.74)"><tspan x="0" y="0">FlashLearn</tspan></text>
+</svg>

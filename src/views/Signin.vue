@@ -3,7 +3,7 @@
     <v-row class="justify-center align-center">
       <v-col cols="12" sm="12" v-if="!unconfirmed">
         <div class="hidden-md-and-up">
-          <h1 class="text-h4 font-weight-light text-center">FlashLearn</h1>
+          <img :src="require('@/assets/flashlearn-text-logo.svg')" style="width: 180px; display: block; margin: 0 auto;">
         </div>
       </v-col> 
 
@@ -74,7 +74,7 @@
       
       <v-col md="6" lg="6" v-if="!unconfirmed">
         <div class="hidden-sm-and-down mx-10">
-          <p class="text-md-h2 text-lg-h1 font-weight-light">FlashLearn</p>
+          <img :src="require('@/assets/flashlearn-text-logo.svg')">
         </div> 
       </v-col>
 
