@@ -8,10 +8,10 @@
       <img
         :src="require('@/assets/flashlearn-text-logo.svg')"
         style="width: 100px"
-        class="hidden-sm-and-down mt-1"
+        class="mt-1"
       />
     </v-app-bar-title>
-    <v-spacer></v-spacer>
+
     <p class="h6 mx-6 font-weight-medium hidden-sm-and-down">
       Hello {{ username }}
     </p>
