@@ -1,0 +1,25 @@
+{
+  "staging": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-amplifye403e2f8320e4-staging-54445-authRole",
+      "UnauthRoleArn": "arn:aws:iam::941875519416:role/amplify-amplifye403e2f8320e4-staging-54445-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::941875519416:role/amplify-amplifye403e2f8320e4-staging-54445-authRole",
+      "Region": "ap-southeast-1",
+      "DeploymentBucketName": "amplify-amplifye403e2f8320e4-staging-54445-deployment",
+      "UnauthRoleName": "amplify-amplifye403e2f8320e4-staging-54445-unauthRole",
+      "StackName": "amplify-amplifye403e2f8320e4-staging-54445",
+      "StackId": "arn:aws:cloudformation:ap-southeast-1:941875519416:stack/amplify-amplifye403e2f8320e4-staging-54445/bbef9db0-8672-11ed-976b-062603f9d72c",
+      "AmplifyAppId": "d20sacti7sm641"
+    },
+    "categories": {
+      "auth": {
+        "flashlearn": {
+          "userPoolId": "ap-southeast-1_3uDcSREz0",
+          "userPoolName": "FlashLearnUsers",
+          "webClientId": "5chh8kujccjai1v344e6gthgoo",
+          "nativeClientId": "5chh8kujccjai1v344e6gthgoo"
+        }
+      }
+    }
+  }
+}
