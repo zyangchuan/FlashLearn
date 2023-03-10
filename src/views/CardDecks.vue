@@ -169,8 +169,6 @@ import PopUpPrompt from "../components/PopUpPrompt.vue"
 import decksHandler from "../composables/decksHandler"
 import validation from "../composables/validation"
 
-
-
 export default {
   components: { Form, PopUpPrompt },
   setup() {

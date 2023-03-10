@@ -6,7 +6,9 @@
   "aliasAttributes": [
     "preferred_username"
   ],
-  "authProvidersUserPool": [],
+  "authProvidersUserPool": [
+    "Google"
+  ],
   "requiredAttributes": [
     "email"
   ],

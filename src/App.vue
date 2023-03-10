@@ -12,7 +12,7 @@ import { onMounted, watchEffect } from '@vue/runtime-core'
 import { useStore } from 'vuex'
 import Navbar from "./components/Navbar.vue"
 import { useRoute, useRouter } from 'vue-router'
-import { Auth } from 'aws-amplify'
+import { Auth, Hub } from 'aws-amplify'
 import axios from 'axios'
 
 export default {
@@ -25,9 +25,12 @@ export default {
     const isSignedIn = () => {
       return store.getters.isAuthenticated
     }
-
     //If there is no user, return to sign in page
     watchEffect(() => {
+      Auth.currentAuthenticatedUser()
+        .catch(error => {
+          store.commit("setCurrentUser", null);
+        })
       if (!store.getters.isAuthenticated & route.name !== 'Signup' ) {
         router.push({ name: "Signin" })
       }

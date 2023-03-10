@@ -67,7 +67,7 @@
 import { ref } from "@vue/reactivity";
 import { watchEffect } from "@vue/runtime-core";
 import { useStore } from "vuex";
-import { Auth } from "aws-amplify";
+import { Auth, Hub } from "aws-amplify";
 
 export default {
   setup() {
@@ -78,6 +78,7 @@ export default {
 
     watchEffect(() => {
       const user = store.state.currentUser;
+      console.log(user)
       username.value = user.attributes.preferred_username;
     });
 
