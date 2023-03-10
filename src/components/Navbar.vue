@@ -78,7 +78,6 @@ export default {
 
     watchEffect(() => {
       const user = store.state.currentUser;
-      console.log(user)
       username.value = user.attributes.preferred_username;
     });
 

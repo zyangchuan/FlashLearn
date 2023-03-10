@@ -21,8 +21,8 @@ const updatedAwsConfig = {
       "profile",
       "aws.cognito.signin.user.admin"
     ],
-    redirectSignIn: "https://flashlearn.io/",
-    redirectSignOut: "https://flashlearn.io/",
+    redirectSignIn: "https://www.flashlearn.io/card-decks",
+    redirectSignOut: "https://www.flashlearn.io/sign-in",
     responseType: "code"
   },
   federationTarget: "COGNITO_USER_POOLS",
