@@ -21,8 +21,8 @@ const updatedAwsConfig = {
       "profile",
       "aws.cognito.signin.user.admin"
     ],
-    redirectSignIn: "http://localhost:8080/",
-    redirectSignOut: "http://localhost:8080/",
+    redirectSignIn: "https://flashlearn.io/",
+    redirectSignOut: "https://flashlearn.io/",
     responseType: "code"
   },
   federationTarget: "COGNITO_USER_POOLS",
