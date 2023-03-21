@@ -8,7 +8,7 @@ Link to the app: https://www.flashlearn.io
 ## Technologies Used
 1. Vue.js (Javascript framework)  
 2. Vuetify (UI library framework)  
-3. Amazon Web Service (Cloud service)  
+3. Amazon Web Services (Cloud service)  
   
 ## Features of this app
 -  **Test yourself with your own flashcards**📝  
