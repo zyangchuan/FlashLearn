@@ -1,9 +1,9 @@
 # FlashLearn
 A flashcard web app that supercharges your learning.  
-Link to the app: https://www.flashlearn.io
- <a href="https://www.flashlearn.io">
-  <img src="src/assets/flashlearn-text-logo.svg" alt="FlashLearn Logo" width="50%">
- </a>
+Link to the app: https://www.flashlearn.io  
+<a href="https://www.flashlearn.io">
+ <img src="src/assets/flashlearn-text-logo.svg" alt="FlashLearn Logo" width="50%">
+</a>  
    
 ## Technologies Used
 1. Vue.js (Javascript framework)  
@@ -11,7 +11,7 @@ Link to the app: https://www.flashlearn.io
 3. Amazon Web Service (Cloud service)  
   
 ## Features of this app
--  **Test yourself with your own flashcards**📝
+-  **Test yourself with your own flashcards**📝  
 Create your personal digital flashcards and test yourself using your flashcards.  
   
 -  **Put flashcards in decks**📚  
