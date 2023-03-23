@@ -67,7 +67,7 @@
 import { ref } from "@vue/reactivity";
 import { watchEffect } from "@vue/runtime-core";
 import { useStore } from "vuex";
-import { Auth, Hub } from "aws-amplify";
+import { Auth } from "aws-amplify";
 
 export default {
   setup() {

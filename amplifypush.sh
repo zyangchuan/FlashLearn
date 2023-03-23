@@ -95,9 +95,9 @@ CODEGEN="{\
 }"
 
 AUTHCONFIG="{\
-\"userPoolId\":\"${AMPLIFY_USERPOOL_ID}\",\
-\"nativeClientId\":\"${AMPLIFY_NATIVECLIENT_ID}\"\
-\"webClientId\":\"${AMPLIFY_WEBCLIENT_ID}\"\
+\"userPoolId\":\"ap-southeast-1_3uDcSREz0\",\
+\"nativeClientId\":\"5chh8kujccjai1v344e6gthgoo\"\
+\"webClientId\":\"5chh8kujccjai1v344e6gthgoo\"\
 }"
 
 CATEGORIES="{\
