@@ -109,31 +109,43 @@
               Description
             </v-btn>
           </div>
-
           <div>
-            <v-tooltip text="Study" location="top" z-index="0">
+            <v-tooltip text="Study" location="top">
               <template v-slot:activator="{ props }">
-                <v-btn
-                  size="small"
-                  icon="mdi-play"
-                  color="black"
-                  :loading="deck.playLoading"
-                  v-bind="props"
-                  v-on:click="goStudyDeck(deck)"
-                ></v-btn>
+                <div class="buttons"> 
+                    <v-btn
+                    size="small"
+                    icon="mdi-play"
+                    color="black"
+                    :loading="deck.playLoading"
+                    v-bind="props"
+                    v-on:click="goStudyDeck(deck)"
+                    >
+                    <v-progress-circular :model-value="deck.progress" :size="40" color="#55ffff" style="z-index:2" bg-color="black">
+                      <div style="position:absolute; top:7px "><v-icon icon="mdi-play" size="23px" color="white"></v-icon></div>
+                    </v-progress-circular>
+                    </v-btn>
+                  
+                  
+                </div>
+                
               </template>
             </v-tooltip>
 
             <v-tooltip text="Edit" location="top" z-index="0">
               <template v-slot:activator="{ props }">
-                <v-btn 
-                  size="small" 
-                  icon="mdi-pencil" 
-                  color="black" 
-                  class="mx-3" 
-                  v-bind="props" 
-                  v-on:click="goEditDeck(deck)"
-                ></v-btn>
+                <div class="buttons">
+                  <v-progress-circular model-value="100" :size="40" :width="0.1">
+                  <v-btn 
+                    size="small" 
+                    icon="mdi-pencil" 
+                    color="black" 
+                    class="mx-3" 
+                    v-bind="props" 
+                    v-on:click="goEditDeck(deck)"
+                  ></v-btn>
+                  </v-progress-circular>
+                </div>
               </template>
             </v-tooltip>
           </div>
@@ -295,4 +307,12 @@ export default {
     height: 100%;
     width: 100%;
   }
+
+.buttons {
+  display: inline-block;
+  margin-right: 15px;
+  
+}
+
 </style>
+
